@@ -16,6 +16,11 @@ public class DataContract {
     public static final String PATH_FILLUPS = "fillups";
     public static final String PATH_STATIONS = "stations";
 
+    public static final String CAR_TABLE = "car_table";
+    public static final String FILLUP_TABLE = "fillup_table";
+    public static final String STATION_TABLE = "station_table";
+
+
     public static final class CarTable implements BaseColumns{
         public static final String NAME = "name";
         public static final String MAKE = "make";
@@ -23,6 +28,15 @@ public class DataContract {
         public static final String YEAR = "year";
         public static final String INITMILES = "initialmileage";
         public static final String AVGMPG = "avgmpg";
+
+        public static final String CREATE_TABLE = "CREATE TABLE" + CAR_TABLE + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + NAME + " TEXT NOT NULL,"
+                + MAKE + " TEXT NULL,"
+                + MODEL + " TEXT NULL,"
+                + YEAR + " INTEGER NULL,"
+                + INITMILES + " REAL NOT NULL"
+                + AVGMPG + " REAL NULL);";
 
         public static Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_CARS).build();
@@ -36,6 +50,7 @@ public class DataContract {
         public static Uri buildCarWithId(){
             return CONTENT_URI.buildUpon().appendPath(_ID).build();
         }
+
     }
 
     public static final class FillupTable implements BaseColumns{
@@ -47,6 +62,21 @@ public class DataContract {
         public static final String OCTANE = "octane";
         public static final String COST = "cost";
         public static final String DATE = "date";
+
+        public static final String CREATE_TABLE = "CREATE TABLE" + FILLUP_TABLE + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + CAR + " INTEGER NOT NULL,"
+                + MILEAGE + " REAL NOT NULL,"
+                + MPG + " REAL NOT NULL,"
+                + STATION + " INTEGER NOT NULL,"
+                + GALLONS + " REAL NOT NULL,"
+                + OCTANE + " INTEGER NOT NULL,"
+                + COST + " REAL NOT NULL,"
+                + DATE + " INTEGER NOT NULL,"
+                + " FOREIGN KEY (" + CAR + ") REFERENCES "
+                + CAR_TABLE + " (" + CarTable._ID + "), "
+                + " FOREIGN KEY (" + STATION + ") REFERENCES "
+                + STATION_TABLE + " (" + StationTable._ID + "));";
 
         public static Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_FILLUPS).build();
@@ -79,6 +109,17 @@ public class DataContract {
         public static final String LAT = "lat";
         public static final String LON = "lon";
 
+        public static final String CREATE_TABLE = "CREATE TABLE " + STATION_TABLE + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + NAME + " TEXT NOT NULL,"
+                + ADDRESS + " TEXT NOT NULL,"
+                + CITY + " TEXT NOT NULL,"
+                + STATE + " TEXT NOT NULL,"
+                + ZIP + " TEXT NOT NULL,"
+                + LAT + " REAL NOT NULL,"
+                + LON + " REAL NOT NULL);";
+
+
         public static Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_STATIONS).build();
 
@@ -91,7 +132,7 @@ public class DataContract {
         public static Uri buildStationWithId(){
             return CONTENT_URI.buildUpon().appendPath(_ID).build();
         }
-        
+
     }
 
 }
