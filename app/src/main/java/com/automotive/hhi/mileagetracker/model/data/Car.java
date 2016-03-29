@@ -10,6 +10,8 @@ public class Car {
     private String make;
     private String model;
     private int year;
+    private double startingMileage;
+    private double avgMpg;
 
     public int getId() {
         return id;
@@ -67,8 +69,7 @@ public class Car {
         this.avgMpg = avgMpg;
     }
 
-    private double startingMileage;
-    private double avgMpg;
+
 
 
 }

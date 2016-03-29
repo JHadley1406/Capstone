@@ -1,5 +1,8 @@
 package com.automotive.hhi.mileagetracker.model.data;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Josiah Hadley on 3/24/2016.
  */
@@ -81,6 +84,11 @@ public class Fillup {
 
     public long getDate() {
         return date;
+    }
+
+    public String getReadableDate(){
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        return sdf.format(new Date(getDate()));
     }
 
     public void setDate(long date) {
