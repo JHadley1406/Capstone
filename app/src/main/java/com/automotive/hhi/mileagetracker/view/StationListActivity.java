@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,65 +15,62 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.automotive.hhi.mileagetracker.R;
-import com.automotive.hhi.mileagetracker.adapters.CarAdapter;
-import com.automotive.hhi.mileagetracker.presenter.CarListPresenter;
+import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
+import com.automotive.hhi.mileagetracker.model.data.Station;
+import com.automotive.hhi.mileagetracker.presenter.StationListPresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CarListActivity extends AppCompatActivity implements CarListView {
+public class StationListActivity extends AppCompatActivity implements StationListView {
 
-    @Bind(R.id.car_list_fab)
+    @Bind(R.id.station_list_fab)
     private FloatingActionButton mFab;
-    @Bind(R.id.car_list_rv)
-    private RecyclerView mCarRecyclerView;
-    @Bind(R.id.car_list_toolbar)
+    @Bind(R.id.station_list_rv)
+    private RecyclerView mStationRecyclerView;
+    @Bind(R.id.station_list_toolbar)
     private Toolbar mToolbar;
-    private CarListPresenter mCarListPresenter;
+    private StationListPresenter mStationListPresenter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_car_list);
+        setContentView(R.layout.activity_station_list);
         ButterKnife.bind(this);
+
         setSupportActionBar(mToolbar);
 
         prepareRecyclerView();
 
         preparePresenter();
 
+
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddCarFragment carFragment = new AddCarFragment();
-                carFragment.show(getFragmentManager(), "add_car_fragment");
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
     }
 
     @Override
-    protected void onDestroy(){
-        mCarListPresenter.detachView();
-        super.onDestroy();
-    }
-
-    @Override
-    public void showCars(Cursor cars) {
-        CarAdapter adapter = (CarAdapter) mCarRecyclerView.getAdapter();
-        adapter.changeCursor(cars);
+    public void showStations(Cursor stations) {
+        StationAdapter adapter = (StationAdapter)  mStationRecyclerView.getAdapter();
+        adapter.changeCursor(stations);
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public Context getContext() {
-        return getApplicationContext();
+        return null;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_car_list, menu);
+        inflater.inflate(R.menu.menu_station_list, menu);
         return true;
     }
 
@@ -87,16 +85,16 @@ public class CarListActivity extends AppCompatActivity implements CarListView {
         }
     }
 
-    private void prepareRecyclerView(){
-        // this may cause a NPE
-        CarAdapter adapter = new CarAdapter(getContext(), null);
-        mCarRecyclerView.setAdapter(adapter);
-        mCarRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    public void prepareRecyclerView(){
+        StationAdapter adapter = new StationAdapter(getContext(), null);
+        mStationRecyclerView.setAdapter(adapter);
+        mStationRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-    private void preparePresenter(){
-        mCarListPresenter = new CarListPresenter();
-        mCarListPresenter.attachView(this);
-        mCarListPresenter.loadCars();
+    public void preparePresenter(){
+        mStationListPresenter = new StationListPresenter();
+        mStationListPresenter.attachView(this);
+        mStationListPresenter.loadStations();
+
     }
 }

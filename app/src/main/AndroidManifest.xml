@@ -9,8 +9,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".view.CarDetailActivity"
-            android:label="@string/app_name"
+            android:name=".view.CarListActivity"
+            android:label="@string/title_activity_car_list"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,13 +19,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.CarListActivity"
-            android:label="@string/title_activity_car_list"
+            android:name=".view.CarDetailActivity"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
             android:name=".view.SelectStationActivity"
             android:label="@string/title_activity_select_station"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".view.StationListActivity"
+            android:label="@string/title_activity_station_list"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>

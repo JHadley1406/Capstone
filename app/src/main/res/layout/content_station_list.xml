@@ -7,10 +7,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_car_list"
-    tools:context="com.automotive.hhi.mileagetracker.view.CarListActivity">
+    tools:showIn="@layout/activity_station_list"
+    tools:context="com.automotive.hhi.mileagetracker.view.StationListActivity">
     <RecyclerView
-        android:id="@+id/car_list_rv"
+        android:id="@+id/station_list_rv"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_height="fill_parent"></RecyclerView>
 </RelativeLayout>

@@ -9,8 +9,8 @@ import java.util.Date;
 public class Fillup {
 
     private int id;
-    private Car car;
-    private Station station;
+    private int carId;
+    private int stationId;
     private double fillupMileage;
     private double fillupMpg;
     private double gallons;
@@ -26,20 +26,20 @@ public class Fillup {
         this.id = id;
     }
 
-    public Car getCar() {
-        return car;
+    public int getCarId() {
+        return carId;
     }
 
-    public void setCar(Car car) {
-        this.car = car;
+    public void setCarId(int car) {
+        this.carId = car;
     }
 
-    public Station getStation() {
-        return station;
+    public int getStation() {
+        return stationId;
     }
 
-    public void setStation(Station station) {
-        this.station = station;
+    public void setStation(int station) {
+        this.stationId = station;
     }
 
     public double getFillupMileage() {
