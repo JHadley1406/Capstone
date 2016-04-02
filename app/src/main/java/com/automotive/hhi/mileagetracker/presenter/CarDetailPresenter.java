@@ -1,8 +1,6 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
-import android.content.ContentProvider;
 import android.content.ContentResolver;
-import android.database.Cursor;
 
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;

@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.automotive.hhi.mileagetracker.view.AddFillupFragment">
+
+    <EditText
+        android:id="@+id/add_fillup_fuel_amount"
+        android:hint="@string/add_fillup_fuel_amount_hint"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/add_fillup_price"
+        android:hint="@string/add_fillup_price_hint"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/add_fillup_octane"
+        android:hint="@string/add_fillup_octane_hint"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/add_fillup_current_mileage"
+        android:hint="Current Mileage"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/add_fillup_submit"
+        android:text="@string/add_fillup_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</FrameLayout>

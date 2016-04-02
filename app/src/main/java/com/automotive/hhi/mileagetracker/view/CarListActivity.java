@@ -20,7 +20,7 @@ import com.automotive.hhi.mileagetracker.presenter.CarListPresenter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CarListActivity extends AppCompatActivity implements CarListView {
+public class CarListActivity extends AppCompatActivity implements CarListView, AddCarFragment.OnFragmentInteractionListener {
 
     @Bind(R.id.car_list_fab)
     private FloatingActionButton mFab;
@@ -29,6 +29,7 @@ public class CarListActivity extends AppCompatActivity implements CarListView {
     @Bind(R.id.car_list_toolbar)
     private Toolbar mToolbar;
     private CarListPresenter mCarListPresenter;
+    private AddCarFragment mAddCarFragment;
 
 
     @Override
@@ -45,8 +46,8 @@ public class CarListActivity extends AppCompatActivity implements CarListView {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddCarFragment carFragment = new AddCarFragment();
-                carFragment.show(getFragmentManager(), "add_car_fragment");
+                mAddCarFragment = new AddCarFragment();
+                mAddCarFragment.show(getFragmentManager(), "add_car_fragment");
             }
         });
     }
@@ -98,5 +99,10 @@ public class CarListActivity extends AppCompatActivity implements CarListView {
         mCarListPresenter = new CarListPresenter();
         mCarListPresenter.attachView(this);
         mCarListPresenter.loadCars();
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+        mAddCarFragment.dismiss();
     }
 }
