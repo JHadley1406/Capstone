@@ -1,7 +1,6 @@
 package com.automotive.hhi.mileagetracker.view.viewholders;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.widget.TextView;
 
@@ -38,7 +37,6 @@ public class FillupViewHolder extends RecyclerView.ViewHolder {
 
     public void setViewHolder(Fillup fillup){
         mHolderFillup = fillup;
-        mStationName.setText(fillup.getStation().getName());
         mGallons.setText(Double.toString(fillup.getGallons()));
         mFuelCost.setText(Double.toString(fillup.getFuelCost()));
         mOctane.setText(Integer.toString(fillup.getOctane()));

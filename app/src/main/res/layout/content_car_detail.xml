@@ -92,6 +92,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+    <Button
+        android:id="@+id/car_detail_add_fillup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/car_detail_add_fillup_button"/>
     <RecyclerView
         android:id="@+id/car_detail_fillups_rv"
         android:layout_width="wrap_content"

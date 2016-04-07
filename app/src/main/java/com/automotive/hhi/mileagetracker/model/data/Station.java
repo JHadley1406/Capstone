@@ -1,18 +1,28 @@
 package com.automotive.hhi.mileagetracker.model.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Josiah Hadley on 3/24/2016.
  */
-public class Station {
+public class Station implements Parcelable {
 
     private int id;
     private String name;
     private String address;
-    private String city;
-    private String state;
-    private String zip;
     private double lat;
     private double lon;
+
+    public Station(){}
+
+    public Station(Parcel in){
+        this.setId(in.readInt());
+        this.setName(in.readString());
+        this.setAddress(in.readString());
+        this.setLat(in.readDouble());
+        this.setLon(in.readDouble());
+    }
 
     public int getId() {
         return id;
@@ -38,30 +48,6 @@ public class Station {
         this.address = address;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
     public double getLat() {
         return lat;
     }
@@ -76,5 +62,19 @@ public class Station {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.getId());
+        dest.writeString(this.getName());
+        dest.writeString(this.getAddress());
+        dest.writeDouble(this.getLat());
+        dest.writeDouble(this.getLon());
     }
 }

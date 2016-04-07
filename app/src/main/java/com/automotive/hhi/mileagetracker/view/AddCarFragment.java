@@ -45,19 +45,19 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     private String mParam2;
 
     @Bind(R.id.add_car_name)
-    private EditText mName;
+    public EditText mName;
     @Bind(R.id.add_car_make)
-    private EditText mMake;
+    public EditText mMake;
     @Bind(R.id.add_car_model)
-    private EditText mModel;
+    public EditText mModel;
     @Bind(R.id.add_car_year)
-    private EditText mYear;
+    public EditText mYear;
     @Bind(R.id.add_car_mileage)
-    private EditText mMileage;
+    public EditText mMileage;
     @Bind(R.id.add_car_submit)
-    private Button mAddCar;
+    public Button mAddCar;
     @Bind(R.id.add_car_input_container)
-    private LinearLayout mInputContainer;
+    public LinearLayout mInputContainer;
     private AddCarPresenter mAddCarPresenter;
 
     private OnFragmentInteractionListener mListener;
@@ -88,7 +88,7 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAddCarPresenter = new AddCarPresenter();
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -100,12 +100,14 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_car, container, false);
+        mAddCarPresenter = new AddCarPresenter();
+        mAddCarPresenter.attachView(this);
         ButterKnife.bind(this, rootView);
         return rootView;
     }
 
     @OnClick(R.id.add_car_submit)
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed() {
         if(mAddCarPresenter.validateInput(mInputContainer)){
             mAddCarPresenter.insertCar(buildCar());
             if (mListener != null) {
@@ -129,6 +131,7 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mAddCarPresenter.detachView();
     }
 
 

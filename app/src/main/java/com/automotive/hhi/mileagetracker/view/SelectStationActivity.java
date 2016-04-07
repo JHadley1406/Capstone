@@ -14,7 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.automotive.hhi.mileagetracker.IntentContract;
 import com.automotive.hhi.mileagetracker.R;
+import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.presenter.SelectStationPresenter;
@@ -27,11 +29,11 @@ import butterknife.ButterKnife;
 public class SelectStationActivity extends AppCompatActivity implements SelectStationView {
 
     @Bind(R.id.select_station_nearby_rv)
-    private RecyclerView mNearbyStationRV;
+    public RecyclerView mNearbyStationRV;
     @Bind(R.id.select_station_used_rv)
-    private RecyclerView mUsedStationRV;
+    public RecyclerView mUsedStationRV;
     @Bind(R.id.select_station_toolbar)
-    private Toolbar mToolbar;
+    public Toolbar mToolbar;
     private SelectStationPresenter mSelectStationPresenter;
 
     @Override
@@ -39,19 +41,17 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_station);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        prepareRecyclerViews();
+        setSupportActionBar(mToolbar);
+
         preparePresenter();
 
     }
 
     @Override
-    public void showNearby(Cursor stations) {
-        if(stations.moveToFirst()){
-            StationAdapter adapter = (StationAdapter) mNearbyStationRV.getAdapter();
-            adapter.changeCursor(stations);
+    public void showNearby(List<Station> stations) {
+        if(stations.size() > 0){
+            LocBasedStationAdapter adapter = new LocBasedStationAdapter(stations);
             adapter.notifyDataSetChanged();
         }
     }
@@ -88,19 +88,13 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         }
     }
 
-    private void prepareRecyclerViews(){
-        StationAdapter nearbyAdapter = new StationAdapter(getContext(), null);
-        StationAdapter usedAdapter = new StationAdapter(getContext(), null);
-        mNearbyStationRV.setAdapter(nearbyAdapter);
-        mUsedStationRV.setAdapter(usedAdapter);
-        mNearbyStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        mUsedStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
-
     private void preparePresenter(){
         mSelectStationPresenter = new SelectStationPresenter();
         mSelectStationPresenter.attachView(this);
+        mSelectStationPresenter.setCarId(getIntent().getIntExtra(IntentContract.CAR_ID, 1));
         mSelectStationPresenter.loadNearbyStations();
         mSelectStationPresenter.loadUsedStations();
+        mSelectStationPresenter.prepareNearbyStationRv(mNearbyStationRV);
+        mSelectStationPresenter.prepareUsedStaionsRv(mUsedStationRV);
     }
 }

@@ -17,7 +17,7 @@ public class FillupFactory {
         fillup.setCarId(cursor
                 .getInt(cursor
                         .getColumnIndexOrThrow(DataContract.FillupTable.CAR)));
-        fillup.setStation(cursor
+        fillup.setStationId(cursor
                 .getInt(cursor
                         .getColumnIndexOrThrow(DataContract.FillupTable.STATION)));
         fillup.setId(cursor
@@ -47,7 +47,7 @@ public class FillupFactory {
     public static ContentValues toContentValues(Fillup fillup){
         ContentValues vals = new ContentValues();
         vals.put(DataContract.FillupTable.CAR, fillup.getCarId());
-        vals.put(DataContract.FillupTable.STATION, fillup.getStation());
+        vals.put(DataContract.FillupTable.STATION, fillup.getStationId());
         vals.put(DataContract.FillupTable.COST, fillup.getFuelCost());
         vals.put(DataContract.FillupTable.DATE, fillup.getDate());
         vals.put(DataContract.FillupTable.GALLONS, fillup.getGallons());

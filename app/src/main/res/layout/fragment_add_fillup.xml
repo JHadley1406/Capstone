@@ -2,7 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.automotive.hhi.mileagetracker.view.AddFillupFragment">
-
+    <LinearLayout
+        android:id="@+id/add_fillup_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></LinearLayout>
     <EditText
         android:id="@+id/add_fillup_fuel_amount"
         android:hint="@string/add_fillup_fuel_amount_hint"

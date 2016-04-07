@@ -1,5 +1,6 @@
 package com.automotive.hhi.mileagetracker.view.viewholders;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -19,12 +20,6 @@ public class StationViewHolder extends RecyclerView.ViewHolder {
     TextView mName;
     @Bind(R.id.item_station_address)
     TextView mAddress;
-    @Bind(R.id.item_station_city)
-    TextView mCity;
-    @Bind(R.id.item_station_state)
-    TextView mState;
-    @Bind(R.id.item_station_zip)
-    TextView mZip;
 
     Station mHolderStation;
 
@@ -37,8 +32,12 @@ public class StationViewHolder extends RecyclerView.ViewHolder {
         mHolderStation = station;
         mName.setText(station.getName());
         mAddress.setText(station.getAddress());
-        mCity.setText(station.getCity());
-        mState.setText(station.getState());
-        mZip.setText(station.getZip());
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 }

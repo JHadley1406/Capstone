@@ -1,3 +1,4 @@
+/*
 package com.automotive.hhi.mileagetracker;
 
 import android.app.Application;
@@ -8,6 +9,7 @@ import com.automotive.hhi.mileagetracker.dagger.modules.ApplicationModule;
 /**
  * Created by Josiah Hadley on 3/25/2016.
  */
+/*
 public class TrackerApplication extends Application {
 
     private ApplicationComponent mApplicationComponent;
@@ -27,4 +29,4 @@ public class TrackerApplication extends Application {
     public ApplicationComponent getApplicationComponent(){
         return mApplicationComponent;
     }
-}
+}*/

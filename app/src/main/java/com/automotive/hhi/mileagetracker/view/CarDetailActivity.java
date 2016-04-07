@@ -1,6 +1,7 @@
 package com.automotive.hhi.mileagetracker.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.automotive.hhi.mileagetracker.IntentContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
@@ -26,32 +29,34 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class CarDetailActivity extends AppCompatActivity implements CarDetailView {
 
     @Bind(R.id.car_detail_name)
-    private TextView mCarName;
+    public TextView mCarName;
     @Bind(R.id.car_detail_make)
-    private TextView mCarMake;
+    public TextView mCarMake;
     @Bind(R.id.car_detail_model)
-    private TextView mCarModel;
+    public TextView mCarModel;
     @Bind(R.id.car_detail_year)
-    private TextView mCarYear;
+    public TextView mCarYear;
     @Bind(R.id.car_detail_current_mileage)
-    private TextView mCurrentMileage;
+    public TextView mCurrentMileage;
+    @Bind(R.id.car_detail_avg_mpg)
+    public TextView mAverageMpg;
     @Bind(R.id.car_detail_current_mpg)
-    private TextView mAverageMpg;
-    @Bind(R.id.car_detail_current_mpg)
-    private TextView mCurrentMpg;
+    public TextView mCurrentMpg;
     @Bind(R.id.car_detail_last_fillup_date)
-    private TextView mLastFillupDate;
+    public TextView mLastFillupDate;
     @Bind(R.id.car_detail_fillups_rv)
-    private RecyclerView mFillupRecyclerView;
-    @Bind(R.id.car_detail_fab)
-    private FloatingActionButton mFab;
+    public RecyclerView mFillupRecyclerView;
+    @Bind(R.id.car_detail_add_fillup)
+    public Button mAddFillup;
     @Bind(R.id.car_detail_toolbar)
-    private Toolbar mToolbar;
+    public Toolbar mToolbar;
     private CarDetailPresenter mCarDetailPresenter;
+    private AddFillupFragment mAddFillupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,16 +69,13 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         preparePresenter();
 
         prepareRecyclerView();
+    }
 
-
-
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddFillupFragment fillupFragment = new AddFillupFragment();
-                fillupFragment.show(getFragmentManager(), "add_fillup_fragment");
-            }
-        });
+    @OnClick(R.id.car_detail_add_fillup)
+    public void onClick(){
+        Intent selectStationIntent = new Intent(getContext(), SelectStationActivity.class);
+        selectStationIntent.putExtra(IntentContract.CAR_ID, mCarDetailPresenter.mCurrentCarId);
+        startActivity(selectStationIntent);
     }
 
     @Override
@@ -126,7 +128,6 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     }
 
 
-
     private void prepareRecyclerView(){
         FillupAdapter adapter = new FillupAdapter(getContext(), null);
         mFillupRecyclerView.setAdapter(adapter);
@@ -136,6 +137,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     private void preparePresenter(){
         mCarDetailPresenter = new CarDetailPresenter();
         mCarDetailPresenter.attachView(this);
+        mCarDetailPresenter.setCurrentCarid(getIntent().getIntExtra(IntentContract.CAR_ID, 1));
         mCarDetailPresenter.loadFillups();
         mCarDetailPresenter.loadCar();
 

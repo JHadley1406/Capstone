@@ -25,11 +25,11 @@ import butterknife.ButterKnife;
 public class StationListActivity extends AppCompatActivity implements StationListView {
 
     @Bind(R.id.station_list_fab)
-    private FloatingActionButton mFab;
+    public FloatingActionButton mFab;
     @Bind(R.id.station_list_rv)
-    private RecyclerView mStationRecyclerView;
+    public RecyclerView mStationRecyclerView;
     @Bind(R.id.station_list_toolbar)
-    private Toolbar mToolbar;
+    public Toolbar mToolbar;
     private StationListPresenter mStationListPresenter;
 
 

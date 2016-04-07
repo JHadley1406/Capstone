@@ -6,7 +6,7 @@
         android:id="@+id/add_car_input_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
     <EditText
         android:id="@+id/add_car_name"
         android:hint="@string/add_car_name_hint"
@@ -15,7 +15,7 @@
     <EditText
         android:id="@+id/add_car_make"
         android:hint="@string/add_car_make_hint"
-        android:layout_width="match_parentt"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/add_car_model"
@@ -38,4 +38,5 @@
         android:text="@string/add_car_add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    </LinearLayout>
 </FrameLayout>

@@ -12,4 +12,6 @@ import java.util.List;
 public interface CarListView extends MvpView {
 
     void showCars(Cursor cars);
+
+    void addCar();
 }

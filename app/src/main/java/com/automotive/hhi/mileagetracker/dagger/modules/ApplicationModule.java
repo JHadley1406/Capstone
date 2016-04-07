@@ -10,6 +10,7 @@ import dagger.Provides;
 /**
  * Created by Josiah Hadley on 3/25/2016.
  */
+/*
 public class ApplicationModule {
 
     private final Application mApplication;
@@ -25,4 +26,4 @@ public class ApplicationModule {
     }
 
 
-}
+}*/

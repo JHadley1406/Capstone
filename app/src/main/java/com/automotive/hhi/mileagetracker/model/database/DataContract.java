@@ -103,9 +103,6 @@ public class DataContract {
     public static final class StationTable implements BaseColumns{
         public static final String NAME = "name";
         public static final String ADDRESS = "address";
-        public static final String CITY = "city";
-        public static final String STATE = "state";
-        public static final String ZIP = "zip";
         public static final String LAT = "lat";
         public static final String LON = "lon";
 
@@ -113,9 +110,6 @@ public class DataContract {
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + NAME + " TEXT NOT NULL,"
                 + ADDRESS + " TEXT NOT NULL,"
-                + CITY + " TEXT NOT NULL,"
-                + STATE + " TEXT NOT NULL,"
-                + ZIP + " TEXT NOT NULL,"
                 + LAT + " REAL NOT NULL,"
                 + LON + " REAL NOT NULL);";
 

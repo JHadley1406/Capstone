@@ -13,7 +13,7 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
 
     private CarDetailView mCarDetailView;
     private ContentResolver mContentResolver;
-    private int mCurrentCarId;
+    public int mCurrentCarId;
 
     @Override
     public void attachView(CarDetailView view) {
@@ -41,6 +41,10 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
                                 , null, "_id = " + mCurrentCarId
                                 , null, null)));
 
+    }
+
+    public void setCurrentCarid(int carId){
+        mCurrentCarId = carId;
     }
 
 

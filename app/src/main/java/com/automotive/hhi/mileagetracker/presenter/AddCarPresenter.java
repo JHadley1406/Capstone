@@ -31,6 +31,7 @@ public class AddCarPresenter implements Presenter<AddCarView> {
     @Override
     public void detachView() {
         mAddCarView = null;
+        mContext = null;
     }
 
     public void insertCar(Car car){
@@ -44,7 +45,8 @@ public class AddCarPresenter implements Presenter<AddCarView> {
             if(v instanceof EditText){
                 if(TextUtils.isEmpty(((EditText) v).getText().toString())){
                     ((EditText) v).setHintTextColor(Color.RED);
-                    ((EditText) v).setError(mContext.getResources().getString(R.string.edit_text_error));
+                    ((EditText) v).setError(mContext.getResources()
+                            .getString(R.string.edit_text_error));
                     return false;
                 }
             }

@@ -10,11 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.automotive.hhi.mileagetracker.R;
+import com.automotive.hhi.mileagetracker.model.data.Fillup;
+import com.automotive.hhi.mileagetracker.model.database.DataContract;
+import com.automotive.hhi.mileagetracker.presenter.AddFillupPresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,43 +29,45 @@ import butterknife.ButterKnife;
  * Use the {@link AddFillupFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddFillupFragment extends DialogFragment {
+public class AddFillupFragment extends DialogFragment implements AddFillupView {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mCarId;
+    private int mStationId;
 
     @Bind(R.id.add_fillup_fuel_amount)
-    private EditText mFuelAmount;
+    public EditText mFuelAmount;
     @Bind(R.id.add_fillup_price)
-    private EditText mFuelPrice;
+    public EditText mFuelPrice;
     @Bind(R.id.add_fillup_octane)
-    private EditText mOctane;
+    public EditText mOctane;
     @Bind(R.id.add_fillup_current_mileage)
-    private EditText mMileage;
+    public EditText mMileage;
     @Bind(R.id.add_fillup_submit)
-    private Button mAddFillup;
-
+    public Button mAddFillup;
+    @Bind(R.id.add_fillup_layout)
+    public LinearLayout mInputContainer;
+    private AddFillupPresenter mAddFillupPresenter;
     private OnFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param carId PK of car being filled up.
+     * @param stationId PK of station at which the car is being filled up.
      * @return A new instance of fragment AddFillupFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddFillupFragment newInstance(String param1, String param2) {
+    public static AddFillupFragment newInstance(int carId, int stationId) {
         AddFillupFragment fragment = new AddFillupFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(DataContract.FillupTable.CAR, carId);
+        args.putInt(DataContract.FillupTable.STATION, stationId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,8 +80,8 @@ public class AddFillupFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mCarId = getArguments().getInt(DataContract.FillupTable.CAR);
+            mStationId = getArguments().getInt(DataContract.FillupTable.STATION);
         }
     }
 
@@ -82,14 +89,18 @@ public class AddFillupFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_fillup, container, false);
+        mAddFillupPresenter = new AddFillupPresenter(mCarId, mStationId);
+        mAddFillupPresenter.attachView(this);
         ButterKnife.bind(this, rootView);
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    @OnClick(R.id.add_fillup_submit)
+    public void onButtonPressed() {
+        mAddFillupPresenter.validateInput(mInputContainer);
+        mAddFillupPresenter.insertFillup(buildFillup());
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction();
         }
     }
 
@@ -108,6 +119,18 @@ public class AddFillupFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mAddFillupPresenter.detachView();
+    }
+
+
+    private Fillup buildFillup(){
+        Fillup fillup = new Fillup();
+        fillup.setGallons(Double.parseDouble(mFuelAmount.getText().toString()));
+        fillup.setFuelCost(Double.parseDouble(mFuelPrice.getText().toString()));
+        fillup.setFillupMileage(Double.parseDouble(mMileage.getText().toString()));
+        fillup.setOctane(Integer.valueOf(mOctane.getText().toString()));
+        return fillup;
+
     }
 
     /**
@@ -122,7 +145,7 @@ public class AddFillupFragment extends DialogFragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onFragmentInteraction();
     }
 
 }

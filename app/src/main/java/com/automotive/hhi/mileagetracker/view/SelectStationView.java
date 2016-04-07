@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface SelectStationView extends MvpView {
 
-    void showNearby(Cursor stations);
+    void showNearby(List<Station> stations);
 
     void showUsed(Cursor stations);
 

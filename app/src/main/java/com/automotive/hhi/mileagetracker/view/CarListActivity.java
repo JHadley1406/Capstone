@@ -23,11 +23,11 @@ import butterknife.ButterKnife;
 public class CarListActivity extends AppCompatActivity implements CarListView, AddCarFragment.OnFragmentInteractionListener {
 
     @Bind(R.id.car_list_fab)
-    private FloatingActionButton mFab;
+    public FloatingActionButton mFab;
     @Bind(R.id.car_list_rv)
-    private RecyclerView mCarRecyclerView;
+    public RecyclerView mCarRecyclerView;
     @Bind(R.id.car_list_toolbar)
-    private Toolbar mToolbar;
+    public Toolbar mToolbar;
     private CarListPresenter mCarListPresenter;
     private AddCarFragment mAddCarFragment;
 
@@ -46,8 +46,7 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAddCarFragment = new AddCarFragment();
-                mAddCarFragment.show(getFragmentManager(), "add_car_fragment");
+                addCar();
             }
         });
     }
@@ -104,5 +103,11 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
     @Override
     public void onFragmentInteraction() {
         mAddCarFragment.dismiss();
+    }
+
+    @Override
+    public void addCar(){
+        mAddCarFragment = new AddCarFragment();
+        mAddCarFragment.show(getFragmentManager(), "add_car_fragment");
     }
 }

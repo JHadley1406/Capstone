@@ -34,11 +34,11 @@ public class Fillup {
         this.carId = car;
     }
 
-    public int getStation() {
+    public int getStationId() {
         return stationId;
     }
 
-    public void setStation(int station) {
+    public void setStationId(int station) {
         this.stationId = station;
     }
 
