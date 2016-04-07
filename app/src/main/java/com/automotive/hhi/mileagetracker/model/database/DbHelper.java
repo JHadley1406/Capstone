@@ -22,9 +22,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DataContract.CAR_TABLE);
-        db.execSQL(DataContract.STATION_TABLE);
-        db.execSQL(DataContract.FILLUP_TABLE);
+        db.execSQL(DataContract.CarTable.CREATE_TABLE);
+        db.execSQL(DataContract.StationTable.CREATE_TABLE);
+        db.execSQL(DataContract.FillupTable.CREATE_TABLE);
     }
 
     @Override

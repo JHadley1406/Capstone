@@ -38,7 +38,7 @@
         </activity>
         <provider
             android:authorities="com.automotive.hhi.mileagetracker"
-            android:name="model.database.DataProvider"
+            android:name=".model.database.DataProvider"
             android:exported="false"
             android:syncable="true" />
     </application>

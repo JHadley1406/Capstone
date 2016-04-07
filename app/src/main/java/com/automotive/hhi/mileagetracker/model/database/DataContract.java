@@ -29,13 +29,13 @@ public class DataContract {
         public static final String INITMILES = "initialmileage";
         public static final String AVGMPG = "avgmpg";
 
-        public static final String CREATE_TABLE = "CREATE TABLE" + CAR_TABLE + " ("
-                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + NAME + " TEXT NOT NULL,"
-                + MAKE + " TEXT NULL,"
-                + MODEL + " TEXT NULL,"
-                + YEAR + " INTEGER NULL,"
-                + INITMILES + " REAL NOT NULL"
+        public static final String CREATE_TABLE = "CREATE TABLE " + CAR_TABLE + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + NAME + " TEXT NOT NULL, "
+                + MAKE + " TEXT NULL, "
+                + MODEL + " TEXT NULL, "
+                + YEAR + " INTEGER NULL, "
+                + INITMILES + " REAL NOT NULL, "
                 + AVGMPG + " REAL NULL);";
 
         public static Uri CONTENT_URI =
@@ -63,16 +63,16 @@ public class DataContract {
         public static final String COST = "cost";
         public static final String DATE = "date";
 
-        public static final String CREATE_TABLE = "CREATE TABLE" + FILLUP_TABLE + " ("
-                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + CAR + " INTEGER NOT NULL,"
-                + MILEAGE + " REAL NOT NULL,"
-                + MPG + " REAL NOT NULL,"
-                + STATION + " INTEGER NOT NULL,"
-                + GALLONS + " REAL NOT NULL,"
-                + OCTANE + " INTEGER NOT NULL,"
-                + COST + " REAL NOT NULL,"
-                + DATE + " INTEGER NOT NULL,"
+        public static final String CREATE_TABLE = "CREATE TABLE " + FILLUP_TABLE + " ("
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + CAR + " INTEGER NOT NULL, "
+                + MILEAGE + " REAL NOT NULL, "
+                + MPG + " REAL NOT NULL, "
+                + STATION + " INTEGER NOT NULL, "
+                + GALLONS + " REAL NOT NULL, "
+                + OCTANE + " INTEGER NOT NULL, "
+                + COST + " REAL NOT NULL, "
+                + DATE + " INTEGER NOT NULL, "
                 + " FOREIGN KEY (" + CAR + ") REFERENCES "
                 + CAR_TABLE + " (" + CarTable._ID + "), "
                 + " FOREIGN KEY (" + STATION + ") REFERENCES "
@@ -107,10 +107,10 @@ public class DataContract {
         public static final String LON = "lon";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + STATION_TABLE + " ("
-                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + NAME + " TEXT NOT NULL,"
-                + ADDRESS + " TEXT NOT NULL,"
-                + LAT + " REAL NOT NULL,"
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + NAME + " TEXT NOT NULL, "
+                + ADDRESS + " TEXT NOT NULL, "
+                + LAT + " REAL NOT NULL, "
                 + LON + " REAL NOT NULL);";
 
 
