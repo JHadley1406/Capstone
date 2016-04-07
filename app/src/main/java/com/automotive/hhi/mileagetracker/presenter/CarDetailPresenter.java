@@ -3,6 +3,7 @@ package com.automotive.hhi.mileagetracker.presenter;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 
 import com.automotive.hhi.mileagetracker.IntentContract;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
@@ -28,7 +29,6 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
     @Override
     public void detachView() {
         mCarDetailView = null;
-        mContentResolver = null;
     }
 
     public void loadFillups(){
@@ -39,11 +39,14 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
     }
 
     public void loadCar(){
-        mCarDetailView.showCar(CarFactory
-                .fromCursor(mContext.getContentResolver()
-                        .query(DataContract.CarTable.CONTENT_URI
-                                , null, "_id = " + mCurrentCarId
-                                , null, null)));
+        Cursor carCursor = mContext.getContentResolver()
+                .query(DataContract.CarTable.CONTENT_URI
+                        , null, DataContract.CarTable._ID + " = " + mCurrentCarId
+                        , null, null);
+        if(carCursor.moveToFirst()) {
+            mCarDetailView.showCar(CarFactory
+                    .fromCursor(carCursor));
+        }
 
     }
 
@@ -51,8 +54,10 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
         mCurrentCarId = carId;
     }
 
-    public void launchSelectStation(){}
-    Intent selectStationIntent = new Intent(mContext, SelectStationActivity.class);
-    selectStationIntent.  (IntentContract.CAR_ID, mCurrentCarId);
+    public void launchSelectStation() {
+        Intent selectStationIntent = new Intent(mContext, SelectStationActivity.class);
+        selectStationIntent.putExtra(IntentContract.CAR_ID, mCurrentCarId);
+        mCarDetailView.launchSelectStation(selectStationIntent);
+    }
 
 }

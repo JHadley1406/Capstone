@@ -73,7 +73,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
 
     @OnClick(R.id.car_detail_add_fillup)
     public void onClick(){
-
+        mCarDetailPresenter.launchSelectStation();
 
     }
 
@@ -118,7 +118,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         mCarName.setText(car.getName());
         mCarMake.setText(car.getMake());
         mCarModel.setText(car.getModel());
-        mCarYear.setText(car.getYear());
+        mCarYear.setText(Integer.toString(car.getYear()));
     }
 
     @Override

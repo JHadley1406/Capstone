@@ -142,6 +142,7 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
         car.setModel(mModel.getText().toString());
         car.setYear(Integer.valueOf(mYear.getText().toString()));
         car.setStartingMileage(Double.parseDouble(mMileage.getText().toString()));
+        car.setAvgMpg(0.0);
         return car;
     }
 
