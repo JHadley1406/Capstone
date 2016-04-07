@@ -73,9 +73,8 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
 
     @OnClick(R.id.car_detail_add_fillup)
     public void onClick(){
-        Intent selectStationIntent = new Intent(getContext(), SelectStationActivity.class);
-        selectStationIntent.putExtra(IntentContract.CAR_ID, mCarDetailPresenter.mCurrentCarId);
-        startActivity(selectStationIntent);
+
+
     }
 
     @Override
@@ -120,6 +119,11 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         mCarMake.setText(car.getMake());
         mCarModel.setText(car.getModel());
         mCarYear.setText(car.getYear());
+    }
+
+    @Override
+    public void launchSelectStation(Intent selectStationIntent) {
+        startActivity(selectStationIntent);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.automotive.hhi.mileagetracker.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -109,5 +110,10 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
     public void addCar(){
         mAddCarFragment = new AddCarFragment();
         mAddCarFragment.show(getFragmentManager(), "add_car_fragment");
+    }
+
+    @Override
+    public void launchCarDetail(Intent carDetailIntent){
+        startActivity(carDetailIntent);
     }
 }

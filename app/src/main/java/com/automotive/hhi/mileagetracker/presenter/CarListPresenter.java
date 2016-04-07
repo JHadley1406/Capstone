@@ -44,7 +44,7 @@ public class CarListPresenter implements Presenter<CarListView> {
             Car car = CarFactory.fromCursor(carCursor);
             Intent carDetailIntent = new Intent(mContext, CarDetailActivity.class);
             carDetailIntent.putExtra(IntentContract.CAR_ID, car.getId());
-            mCarListView.getContext().startActivity(new Intent());
+            mCarListView.launchCarDetail(carDetailIntent);
         } else{
             mCarListView.showCars(carCursor);
         }

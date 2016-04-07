@@ -1,5 +1,6 @@
 package com.automotive.hhi.mileagetracker.view;
 
+import android.content.Intent;
 import android.database.Cursor;
 
 import com.automotive.hhi.mileagetracker.model.data.Car;
@@ -14,4 +15,6 @@ public interface CarListView extends MvpView {
     void showCars(Cursor cars);
 
     void addCar();
+
+    void launchCarDetail(Intent carIntent);
 }
