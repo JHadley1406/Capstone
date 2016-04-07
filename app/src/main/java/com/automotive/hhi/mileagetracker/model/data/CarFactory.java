@@ -16,7 +16,7 @@ public class CarFactory  {
                 .getDouble(cursor
                         .getColumnIndexOrThrow(DataContract.CarTable.AVGMPG)));
         car.setId(cursor
-                .getInt(cursor
+                .getLong(cursor
                         .getColumnIndexOrThrow(DataContract.CarTable._ID)));
         car.setMake(cursor
                 .getString(cursor

@@ -101,6 +101,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
                     for(PlaceLikelihood likelyStation : placeLikelihoods){
                         if(likelyStation.getPlace().getPlaceTypes().contains(Place.TYPE_GAS_STATION)){
                             Station station = new Station();
+                            station.setId(0);
                             station.setName(likelyStation.getPlace().getName().toString());
                             station.setAddress(likelyStation.getPlace().getAddress().toString());
                             station.setLat(likelyStation.getPlace().getLatLng().latitude);

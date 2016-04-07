@@ -8,9 +8,9 @@ import java.util.Date;
  */
 public class Fillup {
 
-    private int id;
-    private int carId;
-    private int stationId;
+    private long id;
+    private long carId;
+    private long stationId;
     private double fillupMileage;
     private double fillupMpg;
     private double gallons;
@@ -18,27 +18,27 @@ public class Fillup {
     private int octane;
     private long date;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getCarId() {
+    public long getCarId() {
         return carId;
     }
 
-    public void setCarId(int car) {
+    public void setCarId(long car) {
         this.carId = car;
     }
 
-    public int getStationId() {
+    public long getStationId() {
         return stationId;
     }
 
-    public void setStationId(int station) {
+    public void setStationId(long station) {
         this.stationId = station;
     }
 

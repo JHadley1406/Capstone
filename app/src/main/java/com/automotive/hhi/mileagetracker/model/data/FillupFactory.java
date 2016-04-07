@@ -15,13 +15,13 @@ public class FillupFactory {
 
 
         fillup.setCarId(cursor
-                .getInt(cursor
+                .getLong(cursor
                         .getColumnIndexOrThrow(DataContract.FillupTable.CAR)));
         fillup.setStationId(cursor
-                .getInt(cursor
+                .getLong(cursor
                         .getColumnIndexOrThrow(DataContract.FillupTable.STATION)));
         fillup.setId(cursor
-                .getInt(cursor
+                .getLong(cursor
                         .getColumnIndexOrThrow(DataContract.FillupTable._ID)));
         fillup.setDate(cursor
                 .getLong(cursor

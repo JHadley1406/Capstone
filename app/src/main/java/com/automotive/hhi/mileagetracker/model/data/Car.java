@@ -5,7 +5,7 @@ package com.automotive.hhi.mileagetracker.model.data;
  */
 public class Car {
 
-    private int id;
+    private long id;
     private String name;
     private String make;
     private String model;
@@ -13,11 +13,11 @@ public class Car {
     private double startingMileage;
     private double avgMpg;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

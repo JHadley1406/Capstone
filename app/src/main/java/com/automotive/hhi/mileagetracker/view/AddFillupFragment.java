@@ -39,6 +39,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     // TODO: Rename and change types of parameters
     private int mCarId;
     private int mStationId;
+    private static Station mStation;
 
     @Bind(R.id.add_fillup_fuel_amount)
     public EditText mFuelAmount;
@@ -68,7 +69,9 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
         AddFillupFragment fragment = new AddFillupFragment();
         Bundle args = new Bundle();
         args.putInt(DataContract.FillupTable.CAR, carId);
-        args.putInt(DataContract.FillupTable.STATION, station.getId());
+        args.putLong(DataContract.FillupTable.STATION, station.getId());
+        // FIXME: 4/6/16
+        mStation = station;
         fragment.setArguments(args);
         return fragment;
     }
@@ -90,7 +93,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_fillup, container, false);
-        mAddFillupPresenter = new AddFillupPresenter(mCarId, mStationId);
+        mAddFillupPresenter = new AddFillupPresenter(mCarId, mStation);
         mAddFillupPresenter.attachView(this);
         ButterKnife.bind(this, rootView);
         return rootView;
@@ -98,6 +101,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
 
     @OnClick(R.id.add_fillup_submit)
     public void onButtonPressed() {
+        mAddFillupPresenter.checkStation();
         mAddFillupPresenter.validateInput(mInputContainer);
         mAddFillupPresenter.insertFillup(buildFillup());
         if (mListener != null) {

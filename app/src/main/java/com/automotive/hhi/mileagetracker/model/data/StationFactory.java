@@ -14,7 +14,7 @@ public class StationFactory {
         Station station = new Station();
 
         station.setId(cursor
-                .getInt(cursor
+                .getLong(cursor
                         .getColumnIndexOrThrow(DataContract.StationTable._ID)));
         station.setAddress(cursor
                 .getString(cursor

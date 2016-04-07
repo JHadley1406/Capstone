@@ -6,29 +6,19 @@ import android.os.Parcelable;
 /**
  * Created by Josiah Hadley on 3/24/2016.
  */
-public class Station implements Parcelable {
+public class Station {
 
-    private int id;
+    private long id;
     private String name;
     private String address;
     private double lat;
     private double lon;
 
-    public Station(){}
-
-    public Station(Parcel in){
-        this.setId(in.readInt());
-        this.setName(in.readString());
-        this.setAddress(in.readString());
-        this.setLat(in.readDouble());
-        this.setLon(in.readDouble());
-    }
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -64,17 +54,4 @@ public class Station implements Parcelable {
         this.lon = lon;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.getId());
-        dest.writeString(this.getName());
-        dest.writeString(this.getAddress());
-        dest.writeDouble(this.getLat());
-        dest.writeDouble(this.getLon());
-    }
 }

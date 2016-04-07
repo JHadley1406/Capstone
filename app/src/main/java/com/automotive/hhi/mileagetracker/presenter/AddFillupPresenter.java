@@ -1,8 +1,10 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +15,8 @@ import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
 import com.automotive.hhi.mileagetracker.model.data.FillupFactory;
+import com.automotive.hhi.mileagetracker.model.data.Station;
+import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.AddFillupView;
 
@@ -23,12 +27,12 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
 
     private AddFillupView mAddFillupView;
     private Context mContext;
-    private int mStationId;
+    private Station mStation;
     private int mCarId;
 
-    public AddFillupPresenter(int carId, int stationId){
+    public AddFillupPresenter(int carId, Station station){
         mCarId = carId;
-        mStationId = stationId;
+        mStation = station;
     }
 
     @Override
@@ -43,8 +47,17 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
         mContext = null;
     }
 
+    public void checkStation(){
+        if(mStation.getId() == 0){
+            Uri newStationUri = mContext.getContentResolver()
+                    .insert(DataContract.StationTable.CONTENT_URI
+                            , StationFactory.toContentValues(mStation));
+            mStation.setId(ContentUris.parseId(newStationUri));
+        }
+    }
+
     public void insertFillup(Fillup fillup){
-        fillup.setStationId(mStationId);
+        fillup.setStationId(mStation.getId());
         fillup.setCarId(mCarId);
         calculateMpg(fillup);
         mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI
