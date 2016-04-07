@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Station;
+import com.automotive.hhi.mileagetracker.presenter.StationOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.StationViewHolder;
 
 import java.util.List;
@@ -18,9 +19,11 @@ import java.util.List;
 public class LocBasedStationAdapter extends RecyclerView.Adapter<StationViewHolder> {
 
     private List<Station> mStations;
+    private StationOnClickListener mOnClickListener;
 
-    public LocBasedStationAdapter(List<Station> stations){
+    public LocBasedStationAdapter(List<Station> stations, StationOnClickListener onClickListener){
         mStations = stations;
+        mOnClickListener = onClickListener;
     }
 
 
@@ -36,7 +39,7 @@ public class LocBasedStationAdapter extends RecyclerView.Adapter<StationViewHold
 
     @Override
     public void onBindViewHolder(StationViewHolder holder, int position) {
-        holder.setViewHolder(mStations.get(position));
+        holder.setViewHolder(mStations.get(position), mOnClickListener);
     }
 
     @Override

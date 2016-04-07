@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Station;
+import com.automotive.hhi.mileagetracker.presenter.StationOnClickListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,19 +24,20 @@ public class StationViewHolder extends RecyclerView.ViewHolder {
 
     Station mHolderStation;
 
+
     public StationViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
 
-    public void setViewHolder(Station station){
+    public void setViewHolder(Station station, final StationOnClickListener selectedStationListener){
         mHolderStation = station;
         mName.setText(station.getName());
         mAddress.setText(station.getAddress());
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                selectedStationListener.onClick(mHolderStation);
             }
         });
 

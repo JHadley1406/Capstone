@@ -86,7 +86,7 @@ public class StationListActivity extends AppCompatActivity implements StationLis
     }
 
     public void prepareRecyclerView(){
-        StationAdapter adapter = new StationAdapter(getContext(), null);
+        StationAdapter adapter = new StationAdapter(getContext(), null, mStationListPresenter);
         mStationRecyclerView.setAdapter(adapter);
         mStationRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }

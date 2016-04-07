@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.StationFactory;
+import com.automotive.hhi.mileagetracker.presenter.StationOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.StationViewHolder;
 
 /**
@@ -16,14 +17,16 @@ import com.automotive.hhi.mileagetracker.view.viewholders.StationViewHolder;
 public class StationAdapter extends CursorRecyclerViewAdapter<StationViewHolder> {
 
     private Context mContext;
+    private StationOnClickListener mOnClickListener;
 
-    public StationAdapter(Context context, Cursor cursor){
+    public StationAdapter(Context context, Cursor cursor, StationOnClickListener onClickListener){
         super(context, cursor);
         mContext = context;
+        mOnClickListener = onClickListener;
     }
     @Override
     public void onBindViewHolder(StationViewHolder viewHolder, Cursor cursor) {
-        viewHolder.setViewHolder(StationFactory.fromCursor(cursor));
+        viewHolder.setViewHolder(StationFactory.fromCursor(cursor), mOnClickListener);
     }
 
     @Override

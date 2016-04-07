@@ -26,7 +26,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SelectStationActivity extends AppCompatActivity implements SelectStationView {
+public class SelectStationActivity extends AppCompatActivity implements SelectStationView
+        , AddFillupFragment.OnFragmentInteractionListener {
 
     @Bind(R.id.select_station_nearby_rv)
     public RecyclerView mNearbyStationRV;
@@ -35,6 +36,7 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     @Bind(R.id.select_station_toolbar)
     public Toolbar mToolbar;
     private SelectStationPresenter mSelectStationPresenter;
+    private AddFillupFragment mAddFillupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,8 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     @Override
     public void showNearby(List<Station> stations) {
         if(stations.size() > 0){
-            LocBasedStationAdapter adapter = new LocBasedStationAdapter(stations);
+            LocBasedStationAdapter adapter =
+                    new LocBasedStationAdapter(stations, mSelectStationPresenter);
             adapter.notifyDataSetChanged();
         }
     }
@@ -63,6 +66,12 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
             adapter.changeCursor(stations);
             adapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void addFillup(int carId, Station station) {
+        mAddFillupFragment = AddFillupFragment.newInstance(carId, station);
+        mAddFillupFragment.show(getFragmentManager(), "add_fillup_fragment");
     }
 
     @Override
@@ -96,5 +105,10 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         mSelectStationPresenter.loadUsedStations();
         mSelectStationPresenter.prepareNearbyStationRv(mNearbyStationRV);
         mSelectStationPresenter.prepareUsedStaionsRv(mUsedStationRV);
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+        mAddFillupFragment.dismiss();
     }
 }

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
+import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.presenter.AddFillupPresenter;
 
@@ -59,15 +60,15 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
      * this fragment using the provided parameters.
      *
      * @param carId PK of car being filled up.
-     * @param stationId PK of station at which the car is being filled up.
+     * @param station station object at which the car is being filled up.
      * @return A new instance of fragment AddFillupFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddFillupFragment newInstance(int carId, int stationId) {
+    public static AddFillupFragment newInstance(int carId, Station station) {
         AddFillupFragment fragment = new AddFillupFragment();
         Bundle args = new Bundle();
         args.putInt(DataContract.FillupTable.CAR, carId);
-        args.putInt(DataContract.FillupTable.STATION, stationId);
+        args.putInt(DataContract.FillupTable.STATION, station.getId());
         fragment.setArguments(args);
         return fragment;
     }
@@ -144,7 +145,6 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction();
     }
 

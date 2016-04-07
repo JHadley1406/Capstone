@@ -9,7 +9,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_car_list"
     tools:context="com.automotive.hhi.mileagetracker.view.CarListActivity">
-    <RecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/car_list_rv"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>

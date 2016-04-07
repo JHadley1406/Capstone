@@ -14,7 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/select_station_nearby_rv"/>
-    <RecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/select_station_nearby_rv"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/select_station_used_rv"/>
-    <RecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/select_station_used_rv"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

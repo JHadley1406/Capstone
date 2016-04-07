@@ -3,6 +3,7 @@ package com.automotive.hhi.mileagetracker.presenter;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +15,7 @@ import android.util.Log;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
+import com.automotive.hhi.mileagetracker.view.AddFillupFragment;
 import com.automotive.hhi.mileagetracker.view.SelectStationView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,7 +36,8 @@ import java.util.jar.Manifest;
  */
 public class SelectStationPresenter implements Presenter<SelectStationView>
         , GoogleApiClient.ConnectionCallbacks
-        , GoogleApiClient.OnConnectionFailedListener {
+        , GoogleApiClient.OnConnectionFailedListener
+        , StationOnClickListener {
 
     private final String LOG_TAG = SelectStationPresenter.class.getSimpleName();
 
@@ -123,7 +126,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     }
 
     public void prepareUsedStaionsRv(RecyclerView recyclerView){
-        StationAdapter usedAdapter = new StationAdapter(mContext, null);
+        StationAdapter usedAdapter = new StationAdapter(mContext, null, this);
         recyclerView.setAdapter(usedAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
     }
@@ -132,5 +135,11 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     public void prepareNearbyStationRv(RecyclerView recyclerView){
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+    }
+
+
+    @Override
+    public void onClick(Station station) {
+        mSelectStationView.addFillup(mCarId, station);
     }
 }
