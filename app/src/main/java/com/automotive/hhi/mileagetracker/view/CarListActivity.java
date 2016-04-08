@@ -41,7 +41,7 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
         setSupportActionBar(mToolbar);
 
         preparePresenter();
-        prepareRecyclerView();
+        mCarRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,10 +58,9 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
     }
 
     @Override
-    public void showCars(Cursor cars) {
-        CarAdapter adapter = (CarAdapter) mCarRecyclerView.getAdapter();
-        adapter.changeCursor(cars);
-        adapter.notifyDataSetChanged();
+    public void showCars(CarAdapter cars) {
+        mCarRecyclerView.setAdapter(cars);
+
     }
 
     @Override
@@ -85,13 +84,6 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void prepareRecyclerView(){
-        // this may cause a NPE
-        CarAdapter adapter = new CarAdapter(getContext(), null);
-        mCarRecyclerView.setAdapter(adapter);
-        mCarRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void preparePresenter(){

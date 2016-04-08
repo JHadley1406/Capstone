@@ -18,7 +18,7 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
 
     private CarDetailView mCarDetailView;
     private Context mContext;
-    public int mCurrentCarId;
+    public long mCurrentCarId;
 
     @Override
     public void attachView(CarDetailView view) {
@@ -50,7 +50,7 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
 
     }
 
-    public void setCurrentCarid(int carId){
+    public void setCurrentCarid(long carId){
         mCurrentCarId = carId;
     }
 

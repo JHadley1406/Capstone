@@ -41,6 +41,9 @@
             android:name=".model.database.DataProvider"
             android:exported="false"
             android:syncable="true" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyALNlHCCK31qLSD9kGDDE9WjNwPg5cZsmw"/>
     </application>
 
 </manifest>

@@ -45,27 +45,21 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
+        mUsedStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
+        mNearbyStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
 
         preparePresenter();
 
     }
 
     @Override
-    public void showNearby(List<Station> stations) {
-        if(stations.size() > 0){
-            LocBasedStationAdapter adapter =
-                    new LocBasedStationAdapter(stations, mSelectStationPresenter);
-            adapter.notifyDataSetChanged();
-        }
+    public void showNearby(LocBasedStationAdapter stations) {
+        mNearbyStationRV.setAdapter(stations);
     }
 
     @Override
-    public void showUsed(Cursor stations) {
-        if(stations.moveToFirst()){
-            StationAdapter adapter = (StationAdapter) mUsedStationRV.getAdapter();
-            adapter.changeCursor(stations);
-            adapter.notifyDataSetChanged();
-        }
+    public void showUsed(StationAdapter stations) {
+        mUsedStationRV.setAdapter(stations);
     }
 
     @Override
@@ -103,8 +97,7 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         mSelectStationPresenter.setCarId(getIntent().getIntExtra(IntentContract.CAR_ID, 1));
         mSelectStationPresenter.loadNearbyStations();
         mSelectStationPresenter.loadUsedStations();
-        mSelectStationPresenter.prepareNearbyStationRv(mNearbyStationRV);
-        mSelectStationPresenter.prepareUsedStaionsRv(mUsedStationRV);
+
     }
 
     @Override

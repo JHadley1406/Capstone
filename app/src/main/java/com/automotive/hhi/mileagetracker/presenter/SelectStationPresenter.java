@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
@@ -84,14 +86,17 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     public void loadNearbyStations(){
         Log.i(LOG_TAG, "In loadNearbyStations");
-       mSelectStationView.showNearby(mStations);
+        LocBasedStationAdapter adapter = new LocBasedStationAdapter(mStations, this);
+        mSelectStationView.showNearby(adapter);
     }
 
     public void loadUsedStations(){
         Log.i(LOG_TAG, "In loadUsedStations");
-        mSelectStationView.showUsed(mContext.getContentResolver()
+        Cursor usedStationCursor = mContext.getContentResolver()
                 .query(DataContract.StationTable.CONTENT_URI
-                        , null, null, null, null));
+                        , null, null, null, null);
+        StationAdapter adapter = new StationAdapter(mContext, usedStationCursor, this);
+        mSelectStationView.showUsed(adapter);
     }
 
     public void setCarId(int carId){
@@ -121,6 +126,10 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
                             station.setLat(likelyStation.getPlace().getLatLng().latitude);
                             station.setLon(likelyStation.getPlace().getLatLng().longitude);
                             mStations.add(station);
+                        } else{
+                            Log.i(LOG_TAG, "Not a gas station");
+                            Log.i(LOG_TAG, "Place name: " + likelyStation.getPlace().getName().toString());
+                            Log.i(LOG_TAG, "Place Types: " + likelyStation.getPlace().getPlaceTypes());
                         }
                     }
                     placeLikelihoods.release();
@@ -139,20 +148,6 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(LOG_TAG, "Connection Failed : " + connectionResult.toString());
     }
-
-    public void prepareUsedStaionsRv(RecyclerView recyclerView){
-        Log.i(LOG_TAG, "In prepareUsedStationRv");
-        StationAdapter usedAdapter = new StationAdapter(mContext, null, this);
-        recyclerView.setAdapter(usedAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-    }
-
-
-    public void prepareNearbyStationRv(RecyclerView recyclerView){
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-    }
-
 
     @Override
     public void onClick(Station station) {

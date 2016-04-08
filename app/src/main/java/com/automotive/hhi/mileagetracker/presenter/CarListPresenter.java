@@ -3,8 +3,10 @@ package com.automotive.hhi.mileagetracker.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.automotive.hhi.mileagetracker.IntentContract;
+import com.automotive.hhi.mileagetracker.adapters.CarAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
@@ -14,7 +16,9 @@ import com.automotive.hhi.mileagetracker.view.CarListView;
 /**
  * Created by Josiah Hadley on 3/24/2016.
  */
-public class CarListPresenter implements Presenter<CarListView> {
+public class CarListPresenter implements Presenter<CarListView>, CarOnClickListener {
+
+    private final String LOG_TAG = CarListPresenter.class.getSimpleName();
 
     private CarListView mCarListView;
     private Context mContext;
@@ -46,9 +50,17 @@ public class CarListPresenter implements Presenter<CarListView> {
             carDetailIntent.putExtra(IntentContract.CAR_ID, car.getId());
             mCarListView.launchCarDetail(carDetailIntent);
         } else{
-            mCarListView.showCars(carCursor);
+            CarAdapter carAdapter = new CarAdapter(mContext, carCursor, this);
+            mCarListView.showCars(carAdapter);
         }
     }
 
 
+    @Override
+    public void onClick(Car car) {
+        Intent carDetailIntent = new Intent(mContext, CarDetailActivity.class);
+        carDetailIntent.putExtra(IntentContract.CAR_ID, car.getId());
+        Log.i(LOG_TAG, "sent car Id: " + car.getId());
+        mCarListView.launchCarDetail(carDetailIntent);
+    }
 }

@@ -141,7 +141,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     private void preparePresenter(){
         mCarDetailPresenter = new CarDetailPresenter();
         mCarDetailPresenter.attachView(this);
-        mCarDetailPresenter.setCurrentCarid(getIntent().getIntExtra(IntentContract.CAR_ID, 1));
+        mCarDetailPresenter.setCurrentCarid(getIntent().getLongExtra(IntentContract.CAR_ID, 1));
         mCarDetailPresenter.loadFillups();
         mCarDetailPresenter.loadCar();
 

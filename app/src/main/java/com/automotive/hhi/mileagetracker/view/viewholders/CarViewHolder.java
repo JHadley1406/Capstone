@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
+import com.automotive.hhi.mileagetracker.presenter.CarOnClickListener;
 
 import org.w3c.dom.Text;
 
@@ -38,12 +39,19 @@ public class CarViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setViewHolder(Car car){
+    public void setViewHolder(Car car, final CarOnClickListener selectedCarListener){
         mHolderCar = car;
         mName.setText(car.getName());
         mMake.setText(car.getMake());
         mModel.setText(car.getModel());
-        mYear.setText(car.getYear());
+        mYear.setText(Integer.toString(car.getYear()));
         mMpg.setText(Double.toString(car.getAvgMpg()));
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedCarListener.onClick(mHolderCar);
+            }
+        });
     }
 }
