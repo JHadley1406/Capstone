@@ -21,7 +21,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceFilter;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
@@ -56,12 +58,18 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void attachView(SelectStationView view) {
+        Log.i(LOG_TAG, "In attachView");
         mSelectStationView = view;
         mContext = mSelectStationView.getContext();
         mGoogleApiClient = new GoogleApiClient
                 .Builder(mContext)
+                .addApiIfAvailable(LocationServices.API)
+                .addApiIfAvailable(Places.GEO_DATA_API)
                 .addApiIfAvailable(Places.PLACE_DETECTION_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
+        Log.i(LOG_TAG, "Connecting to Google Api Client");
         mGoogleApiClient.connect();
     }
 
@@ -75,11 +83,12 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     }
 
     public void loadNearbyStations(){
-
+        Log.i(LOG_TAG, "In loadNearbyStations");
        mSelectStationView.showNearby(mStations);
     }
 
     public void loadUsedStations(){
+        Log.i(LOG_TAG, "In loadUsedStations");
         mSelectStationView.showUsed(mContext.getContentResolver()
                 .query(DataContract.StationTable.CONTENT_URI
                         , null, null, null, null));
@@ -91,6 +100,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.i(LOG_TAG, "In onConnected");
         if(ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions((Activity)mSelectStationView, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
         } else{
@@ -98,8 +108,12 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
             nearbyStationBuffer.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
                 public void onResult(PlaceLikelihoodBuffer placeLikelihoods) {
+                    Log.i(LOG_TAG, "in nearbyStationBuffer onResult");
+                    Log.i(LOG_TAG, "Returned : " + placeLikelihoods.getCount());
                     for(PlaceLikelihood likelyStation : placeLikelihoods){
                         if(likelyStation.getPlace().getPlaceTypes().contains(Place.TYPE_GAS_STATION)){
+                            Log.i(LOG_TAG, "Stations Exist");
+                            Log.i(LOG_TAG, likelyStation.getPlace().getName().toString());
                             Station station = new Station();
                             station.setId(0);
                             station.setName(likelyStation.getPlace().getName().toString());
@@ -127,6 +141,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     }
 
     public void prepareUsedStaionsRv(RecyclerView recyclerView){
+        Log.i(LOG_TAG, "In prepareUsedStationRv");
         StationAdapter usedAdapter = new StationAdapter(mContext, null, this);
         recyclerView.setAdapter(usedAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));

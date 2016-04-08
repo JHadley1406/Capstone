@@ -40,9 +40,8 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
 
-        prepareRecyclerView();
-
         preparePresenter();
+        prepareRecyclerView();
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
