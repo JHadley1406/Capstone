@@ -1,13 +1,12 @@
 package com.automotive.hhi.mileagetracker.view.viewholders;
 
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Station;
-import com.automotive.hhi.mileagetracker.presenter.StationOnClickListener;
+import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,7 +29,7 @@ public class StationViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setViewHolder(Station station, final StationOnClickListener selectedStationListener){
+    public void setViewHolder(Station station, final ViewHolderOnClickListener<Station> selectedStationListener){
         mHolderStation = station;
         mName.setText(station.getName());
         mAddress.setText(station.getAddress());

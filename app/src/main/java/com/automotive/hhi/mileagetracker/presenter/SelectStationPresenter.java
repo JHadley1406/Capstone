@@ -16,6 +16,7 @@ import android.util.Log;
 import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Station;
+import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.AddFillupFragment;
 import com.automotive.hhi.mileagetracker.view.SelectStationView;
@@ -41,18 +42,19 @@ import java.util.jar.Manifest;
 public class SelectStationPresenter implements Presenter<SelectStationView>
         , GoogleApiClient.ConnectionCallbacks
         , GoogleApiClient.OnConnectionFailedListener
-        , StationOnClickListener {
+        , ViewHolderOnClickListener<Station> {
 
     private final String LOG_TAG = SelectStationPresenter.class.getSimpleName();
 
     private final int PERMISSION_REQUEST_CODE = 100;
 
     private SelectStationView mSelectStationView;
+    private LocBasedStationAdapter mNearbyAdapter;
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
     private List<Station> mStations;
 
-    public int mCarId;
+    public long mCarId;
 
     public SelectStationPresenter(){
         mStations = new ArrayList<>();
@@ -60,7 +62,6 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void attachView(SelectStationView view) {
-        Log.i(LOG_TAG, "In attachView");
         mSelectStationView = view;
         mContext = mSelectStationView.getContext();
         mGoogleApiClient = new GoogleApiClient
@@ -71,8 +72,9 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-        Log.i(LOG_TAG, "Connecting to Google Api Client");
         mGoogleApiClient.connect();
+        mNearbyAdapter = new LocBasedStationAdapter(mStations, this);
+        loadNearbyStations();
     }
 
     @Override
@@ -85,21 +87,39 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     }
 
     public void loadNearbyStations(){
-        Log.i(LOG_TAG, "In loadNearbyStations");
-        LocBasedStationAdapter adapter = new LocBasedStationAdapter(mStations, this);
-        mSelectStationView.showNearby(adapter);
+        mSelectStationView.showNearby(mNearbyAdapter);
     }
 
+    private void updateNearbyStations(){
+        mNearbyAdapter.updateStations(mStations);
+    }
+
+
+
     public void loadUsedStations(){
-        Log.i(LOG_TAG, "In loadUsedStations");
         Cursor usedStationCursor = mContext.getContentResolver()
                 .query(DataContract.StationTable.CONTENT_URI
                         , null, null, null, null);
-        StationAdapter adapter = new StationAdapter(mContext, usedStationCursor, this);
-        mSelectStationView.showUsed(adapter);
+        if(usedStationCursor == null || !usedStationCursor.moveToFirst()){
+            insertTestData();
+        } else {
+            StationAdapter adapter = new StationAdapter(mContext, usedStationCursor, this);
+            mSelectStationView.showUsed(adapter);
+        }
+
     }
 
-    public void setCarId(int carId){
+    private void insertTestData(){
+        Station station = new Station();
+        station.setLat(9999);
+        station.setLon(9999);
+        station.setName("Test Station");
+        station.setAddress("123 Test St. San Jose CA, 95113");
+        mContext.getContentResolver().insert(DataContract.StationTable.CONTENT_URI, StationFactory.toContentValues(station));
+        loadUsedStations();
+    }
+
+    public void setCarId(long carId){
         mCarId = carId;
     }
 
@@ -113,12 +133,8 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
             nearbyStationBuffer.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
                 public void onResult(PlaceLikelihoodBuffer placeLikelihoods) {
-                    Log.i(LOG_TAG, "in nearbyStationBuffer onResult");
-                    Log.i(LOG_TAG, "Returned : " + placeLikelihoods.getCount());
                     for(PlaceLikelihood likelyStation : placeLikelihoods){
                         if(likelyStation.getPlace().getPlaceTypes().contains(Place.TYPE_GAS_STATION)){
-                            Log.i(LOG_TAG, "Stations Exist");
-                            Log.i(LOG_TAG, likelyStation.getPlace().getName().toString());
                             Station station = new Station();
                             station.setId(0);
                             station.setName(likelyStation.getPlace().getName().toString());
@@ -126,17 +142,14 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
                             station.setLat(likelyStation.getPlace().getLatLng().latitude);
                             station.setLon(likelyStation.getPlace().getLatLng().longitude);
                             mStations.add(station);
-                        } else{
-                            Log.i(LOG_TAG, "Not a gas station");
-                            Log.i(LOG_TAG, "Place name: " + likelyStation.getPlace().getName().toString());
-                            Log.i(LOG_TAG, "Place Types: " + likelyStation.getPlace().getPlaceTypes());
                         }
                     }
                     placeLikelihoods.release();
+                    updateNearbyStations();
                 }
             });
         }
-        loadNearbyStations();
+
     }
 
     @Override

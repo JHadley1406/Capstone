@@ -1,16 +1,12 @@
 package com.automotive.hhi.mileagetracker.view.viewholders;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
-import com.automotive.hhi.mileagetracker.presenter.CarOnClickListener;
-
-import org.w3c.dom.Text;
+import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,13 +35,13 @@ public class CarViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setViewHolder(Car car, final CarOnClickListener selectedCarListener){
+    public void setViewHolder(Car car, final ViewHolderOnClickListener<Car> selectedCarListener){
         mHolderCar = car;
         mName.setText(car.getName());
         mMake.setText(car.getMake());
         mModel.setText(car.getModel());
-        mYear.setText(Integer.toString(car.getYear()));
-        mMpg.setText(Double.toString(car.getAvgMpg()));
+        mYear.setText(String.format("%d", car.getYear()));
+        mMpg.setText(String.format("%.1f", car.getAvgMpg()));
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

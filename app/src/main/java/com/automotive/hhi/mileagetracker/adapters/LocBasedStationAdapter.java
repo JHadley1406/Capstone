@@ -1,14 +1,14 @@
 package com.automotive.hhi.mileagetracker.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Station;
-import com.automotive.hhi.mileagetracker.presenter.StationOnClickListener;
+import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.StationViewHolder;
 
 import java.util.List;
@@ -18,10 +18,13 @@ import java.util.List;
  */
 public class LocBasedStationAdapter extends RecyclerView.Adapter<StationViewHolder> {
 
-    private List<Station> mStations;
-    private StationOnClickListener mOnClickListener;
+    private final String LOG_TAG = LocBasedStationAdapter.class.getSimpleName();
 
-    public LocBasedStationAdapter(List<Station> stations, StationOnClickListener onClickListener){
+    private List<Station> mStations;
+    private ViewHolderOnClickListener<Station> mOnClickListener;
+
+    public LocBasedStationAdapter(List<Station> stations, ViewHolderOnClickListener<Station> onClickListener){
+
         mStations = stations;
         mOnClickListener = onClickListener;
     }
@@ -29,7 +32,6 @@ public class LocBasedStationAdapter extends RecyclerView.Adapter<StationViewHold
 
     @Override
     public StationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View itemView = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.station_item, parent, false);
@@ -44,6 +46,11 @@ public class LocBasedStationAdapter extends RecyclerView.Adapter<StationViewHold
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mStations.size();
+    }
+
+    public void updateStations(List<Station> stations){
+        mStations = stations;
+        notifyDataSetChanged();
     }
 }

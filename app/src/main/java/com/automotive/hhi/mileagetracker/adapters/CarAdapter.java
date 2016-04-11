@@ -7,8 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.automotive.hhi.mileagetracker.R;
+import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
-import com.automotive.hhi.mileagetracker.presenter.CarOnClickListener;
+import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.CarViewHolder;
 
 /**
@@ -17,9 +18,9 @@ import com.automotive.hhi.mileagetracker.view.viewholders.CarViewHolder;
 public class CarAdapter extends CursorRecyclerViewAdapter<CarViewHolder> {
 
     private Context mContext;
-    private CarOnClickListener mCarOnClickListener;
+    private ViewHolderOnClickListener<Car> mCarOnClickListener;
 
-    public CarAdapter(Context context, Cursor cursor, CarOnClickListener carOnClickListener){
+    public CarAdapter(Context context, Cursor cursor, ViewHolderOnClickListener<Car> carOnClickListener){
         super(context, cursor);
         mContext = context;
         mCarOnClickListener = carOnClickListener;

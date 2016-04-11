@@ -41,7 +41,7 @@ public class StationListActivity extends AppCompatActivity implements StationLis
 
         setSupportActionBar(mToolbar);
 
-        prepareRecyclerView();
+        mStationRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         preparePresenter();
 
@@ -56,10 +56,9 @@ public class StationListActivity extends AppCompatActivity implements StationLis
     }
 
     @Override
-    public void showStations(Cursor stations) {
-        StationAdapter adapter = (StationAdapter)  mStationRecyclerView.getAdapter();
-        adapter.changeCursor(stations);
-        adapter.notifyDataSetChanged();
+    public void showStations(StationAdapter stations) {
+        mStationRecyclerView.setAdapter(stations);
+        //stations.notifyDataSetChanged();
     }
 
     @Override
@@ -83,12 +82,6 @@ public class StationListActivity extends AppCompatActivity implements StationLis
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public void prepareRecyclerView(){
-        StationAdapter adapter = new StationAdapter(getContext(), null, mStationListPresenter);
-        mStationRecyclerView.setAdapter(adapter);
-        mStationRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     public void preparePresenter(){

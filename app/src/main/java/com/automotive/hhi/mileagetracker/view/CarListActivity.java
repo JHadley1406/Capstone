@@ -1,5 +1,6 @@
 package com.automotive.hhi.mileagetracker.view;
 
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +24,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class CarListActivity extends AppCompatActivity implements CarListView, AddCarFragment.OnFragmentInteractionListener {
+
+    private final String LOG_TAG = CarListActivity.class.getSimpleName();
+    private final int LOADER_ID = 12345123;
 
     @Bind(R.id.car_list_fab)
     public FloatingActionButton mFab;
@@ -59,8 +64,9 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
 
     @Override
     public void showCars(CarAdapter cars) {
+        Log.i(LOG_TAG, "In showCars");
         mCarRecyclerView.setAdapter(cars);
-
+        cars.notifyDataSetChanged();
     }
 
     @Override
@@ -89,12 +95,13 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
     private void preparePresenter(){
         mCarListPresenter = new CarListPresenter();
         mCarListPresenter.attachView(this);
-        mCarListPresenter.loadCars();
+        getLoaderManager().initLoader(LOADER_ID, null, mCarListPresenter);
     }
 
     @Override
     public void onFragmentInteraction() {
         mAddCarFragment.dismiss();
+        mCarRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -106,5 +113,10 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
     @Override
     public void launchCarDetail(Intent carDetailIntent){
         startActivity(carDetailIntent);
+    }
+
+    @Override
+    public LoaderManager getLoaderManager(){
+        return getLoaderManager();
     }
 }

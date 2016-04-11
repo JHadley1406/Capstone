@@ -17,6 +17,6 @@ public interface SelectStationView extends MvpView {
 
     void showUsed(StationAdapter stations);
 
-    void addFillup(int carId, Station station);
+    void addFillup(long carId, Station station);
 
 }

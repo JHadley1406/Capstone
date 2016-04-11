@@ -3,6 +3,7 @@ package com.automotive.hhi.mileagetracker.view;
 import android.content.Intent;
 import android.database.Cursor;
 
+import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
 
@@ -13,7 +14,9 @@ import java.util.List;
  */
 public interface CarDetailView extends MvpView {
 
-    void showFillups(Cursor fillups);
+    void showFillups(FillupAdapter fillupAdapter);
+
+    void setMileageData(Fillup fillup);
 
     void showCar(Car car);
 

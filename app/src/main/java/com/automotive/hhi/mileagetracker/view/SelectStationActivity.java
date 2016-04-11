@@ -21,6 +21,7 @@ import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.presenter.SelectStationPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -45,9 +46,9 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mUsedStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
         mNearbyStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
-
         preparePresenter();
 
     }
@@ -55,15 +56,17 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     @Override
     public void showNearby(LocBasedStationAdapter stations) {
         mNearbyStationRV.setAdapter(stations);
+        //stations.notifyDataSetChanged();
     }
 
     @Override
     public void showUsed(StationAdapter stations) {
         mUsedStationRV.setAdapter(stations);
+        //stations.notifyDataSetChanged();
     }
 
     @Override
-    public void addFillup(int carId, Station station) {
+    public void addFillup(long carId, Station station) {
         mAddFillupFragment = AddFillupFragment.newInstance(carId, station);
         mAddFillupFragment.show(getFragmentManager(), "add_fillup_fragment");
     }
@@ -94,8 +97,8 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     private void preparePresenter(){
         mSelectStationPresenter = new SelectStationPresenter();
         mSelectStationPresenter.attachView(this);
-        mSelectStationPresenter.setCarId(getIntent().getIntExtra(IntentContract.CAR_ID, 1));
-        mSelectStationPresenter.loadNearbyStations();
+        mSelectStationPresenter.setCarId(getIntent().getLongExtra(IntentContract.CAR_ID, 1));
+        //mSelectStationPresenter.loadNearbyStations();
         mSelectStationPresenter.loadUsedStations();
 
     }

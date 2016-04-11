@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 
 import com.automotive.hhi.mileagetracker.IntentContract;
+import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
+import com.automotive.hhi.mileagetracker.model.data.Fillup;
+import com.automotive.hhi.mileagetracker.model.data.FillupFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.CarDetailView;
 import com.automotive.hhi.mileagetracker.view.SelectStationActivity;
@@ -33,9 +36,13 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
 
     public void loadFillups(){
         String sortOrder = "date DESC";
-        mCarDetailView.showFillups(mContext.getContentResolver()
+        Cursor fillupCursor = mContext.getContentResolver()
                 .query(DataContract.FillupTable.CONTENT_URI
-                        , null, "car = " + mCurrentCarId, null, sortOrder));
+                        , null, "car = " + mCurrentCarId, null, sortOrder);
+        if(fillupCursor != null && fillupCursor.moveToFirst()){
+            mCarDetailView.showFillups(new FillupAdapter(mContext, fillupCursor));
+            mCarDetailView.setMileageData(FillupFactory.fromCursor(fillupCursor));
+        }
     }
 
     public void loadCar(){
@@ -43,9 +50,10 @@ public class CarDetailPresenter implements Presenter<CarDetailView> {
                 .query(DataContract.CarTable.CONTENT_URI
                         , null, DataContract.CarTable._ID + " = " + mCurrentCarId
                         , null, null);
-        if(carCursor.moveToFirst()) {
+        if(carCursor != null && carCursor.moveToFirst()) {
             mCarDetailView.showCar(CarFactory
                     .fromCursor(carCursor));
+            carCursor.close();
         }
 
     }

@@ -23,13 +23,21 @@
         </activity>
         <activity
             android:name=".view.CarDetailActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:label="@string/title_activity_car_detail"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".view.CarListActivity">
+            <meta-data
+                android:name="android:support.PARENT_ACTIVITY"
+                android:value=".view.CarListActivity"/>
         </activity>
         <activity
             android:name=".view.SelectStationActivity"
             android:label="@string/title_activity_select_station"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".view.CarDetailActivity">
+            <meta-data
+                android:name="android:support.PARENT_ACTIVITY"
+                android:value=".view.CarDetailActivity"/>
         </activity>
         <activity
             android:name=".view.StationListActivity"
@@ -43,7 +51,7 @@
             android:syncable="true" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyALNlHCCK31qLSD9kGDDE9WjNwPg5cZsmw"/>
+            android:value="@string/places_key"/>
     </application>
 
 </manifest>

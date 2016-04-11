@@ -37,8 +37,8 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private int mCarId;
-    private int mStationId;
+    private long mCarId;
+    private long mStationId;
     private static Station mStation;
 
     @Bind(R.id.add_fillup_fuel_amount)
@@ -65,10 +65,10 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
      * @return A new instance of fragment AddFillupFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddFillupFragment newInstance(int carId, Station station) {
+    public static AddFillupFragment newInstance(long carId, Station station) {
         AddFillupFragment fragment = new AddFillupFragment();
         Bundle args = new Bundle();
-        args.putInt(DataContract.FillupTable.CAR, carId);
+        args.putLong(DataContract.FillupTable.CAR, carId);
         args.putLong(DataContract.FillupTable.STATION, station.getId());
         // FIXME: 4/6/16
         mStation = station;
@@ -85,8 +85,10 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mCarId = getArguments().getInt(DataContract.FillupTable.CAR);
-            mStationId = getArguments().getInt(DataContract.FillupTable.STATION);
+            mStationId = getArguments().getLong(DataContract.FillupTable.STATION);
         }
+
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
     }
 
     @Override

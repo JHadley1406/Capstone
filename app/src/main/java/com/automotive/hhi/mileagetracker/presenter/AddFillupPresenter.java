@@ -28,9 +28,9 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
     private AddFillupView mAddFillupView;
     private Context mContext;
     private Station mStation;
-    private int mCarId;
+    private long mCarId;
 
-    public AddFillupPresenter(int carId, Station station){
+    public AddFillupPresenter(long carId, Station station){
         mCarId = carId;
         mStation = station;
     }
@@ -84,27 +84,30 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
         String sortOrder = "date DESC";
         int fillupCount = 1;
         double mileageTotal = 0;
-        Cursor allFillups = mContext.getContentResolver().query(DataContract.FillupTable.CONTENT_URI, null, "carId = " + mCarId, null, sortOrder);
+        Cursor allFillups = mContext.getContentResolver().query(DataContract.FillupTable.CONTENT_URI, null, DataContract.FillupTable.CAR + " = " + mCarId, null, sortOrder);
         // fillup MPG is calculated by subtracting the previous fillup's mileage
         // from the current fillup's mileage, then dividing by
         // the gallons of fuel in this fillup
-        if(allFillups.moveToFirst()){
-            fillupCount = allFillups.getCount();
-            Fillup prevFillup = FillupFactory.fromCursor(allFillups);
-            fillup.setFillupMpg((fillup.getFillupMileage() - prevFillup.getFillupMileage())/fillup.getGallons());
+        if(allFillups != null) {
+            if (allFillups.moveToFirst()) {
+                fillupCount = allFillups.getCount();
+                Fillup prevFillup = FillupFactory.fromCursor(allFillups);
+                fillup.setFillupMpg((fillup.getFillupMileage() - prevFillup.getFillupMileage()) / fillup.getGallons());
+            }
+
+            while (allFillups.moveToNext()) {
+                mileageTotal += allFillups.getInt(allFillups.getColumnIndexOrThrow(DataContract.FillupTable.MPG));
+            }
+            mileageTotal += fillup.getFillupMpg();
+            allFillups.close();
         }
-
-        while(allFillups.moveToNext()){
-            mileageTotal += allFillups.getInt(allFillups.getColumnIndexOrThrow(DataContract.FillupTable.MPG));
+        Cursor carCursor = mContext.getContentResolver().query(DataContract.CarTable.CONTENT_URI, null, DataContract.CarTable._ID + " = " + mCarId, null, null);
+        if(carCursor != null && carCursor.moveToFirst()){
+            Car car = CarFactory.fromCursor(carCursor);
+            car.setAvgMpg(mileageTotal/fillupCount);
+            mContext.getContentResolver().insert(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(car));
+            mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI, FillupFactory.toContentValues(fillup));
+            carCursor.close();
         }
-        mileageTotal += fillup.getFillupMpg();
-        Car car = CarFactory.fromCursor(mContext.getContentResolver().query(DataContract.CarTable.CONTENT_URI, null, "_id = " + mCarId, null, null));
-        car.setAvgMpg(mileageTotal/fillupCount);
-
-        mContext.getContentResolver().insert(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(car));
-        mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI, FillupFactory.toContentValues(fillup));
-        // avg MPG is calculated by taking all of the MPG values from all the fillups
-        // and dividing by the number of fillups
-
     }
 }

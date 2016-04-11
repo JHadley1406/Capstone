@@ -56,7 +56,6 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     @Bind(R.id.car_detail_toolbar)
     public Toolbar mToolbar;
     private CarDetailPresenter mCarDetailPresenter;
-    private AddFillupFragment mAddFillupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +63,11 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         setContentView(R.layout.activity_car_detail);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mFillupRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         preparePresenter();
 
-        prepareRecyclerView();
     }
 
     @OnClick(R.id.car_detail_add_fillup)
@@ -91,26 +90,33 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.car_detail_menu_car_list:
+            {
+                startActivity(new Intent(getContext(), CarListActivity.class));
+            }
+            case R.id.action_settings: {
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void showFillups(Cursor fillups) {
-        if(fillups.moveToFirst()) {
-            FillupAdapter adapter = (FillupAdapter) mFillupRecyclerView.getAdapter();
-            adapter.changeCursor(fillups);
-            adapter.notifyDataSetChanged();
-            Fillup fillup = FillupFactory.fromCursor(fillups);
-            mCurrentMileage.setText(Double.toString(fillup.getFillupMileage()));
-            mCurrentMpg.setText(Double.toString(fillup.getFillupMpg()));
-            mLastFillupDate.setText(fillup.getReadableDate());
-        }
+    public void showFillups(FillupAdapter fillups) {
+        mFillupRecyclerView.setAdapter(fillups);
+        //fillups.notifyDataSetChanged();
     }
+
+    @Override
+    public void setMileageData(Fillup fillup){
+
+        mCurrentMileage.setText(Double.toString(fillup.getFillupMileage()));
+        mCurrentMpg.setText(Double.toString(fillup.getFillupMpg()));
+        mLastFillupDate.setText(fillup.getReadableDate());
+    }
+
 
     @Override
     public void showCar(Car car) {
@@ -131,12 +137,6 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         return getApplicationContext();
     }
 
-
-    private void prepareRecyclerView(){
-        FillupAdapter adapter = new FillupAdapter(getContext(), null);
-        mFillupRecyclerView.setAdapter(adapter);
-        mFillupRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
 
     private void preparePresenter(){
         mCarDetailPresenter = new CarDetailPresenter();

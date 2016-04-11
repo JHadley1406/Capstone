@@ -1,28 +1,35 @@
 <resources>
     <string name="app_name">Mileage Tracker</string>
     <string name="action_settings">Settings</string>
+
     <string name="title_activity_car_list">Car List</string>
     <string name="title_activity_select_station">Select Station</string>
-
+    <string name="title_activity_car_detail">Car Detail</string>
     <string name="title_activity_station_list">Station List</string>
+
     <string name="select_station_nearby_rv">Nearby Stations</string>
     <string name="select_station_used_rv">Visted Stations</string>
+
     <string name="car_detail_current_mpg_label">Current MPG</string>
     <string name="car_detail_avg_mpg_label">Average MPG</string>
     <string name="car_detail_last_fillup_label">Last Fillup Date</string>
     <string name="car_detail_curr_mileage_label">Current Mileage</string>
+
     <string name="add_car_name_hint">Car Name</string>
     <string name="add_car_make_hint">Car Make</string>
     <string name="add_car_model_hint">Car Model</string>
     <string name="add_car_year_hint">Car Year</string>
     <string name="add_car_add_button">Add Car</string>
     <string name="add_car_mileage_hint">Current Mileage</string>
+
     <string name="add_fillup_fuel_amount_hint">Gallons of Fuel</string>
     <string name="add_fillup_price_hint">Price per Gallon</string>
     <string name="add_fillup_octane_hint">Octane Rating</string>
     <string name="add_fillup_add_button">Add Fillup</string>
+
     <string name="edit_text_error">Please Enter</string>
     <string name="car_detail_add_fillup_button">Add Fill-up</string>
 
     <string name="google_app_id" translatable="false">mileagetracker-1271</string>
+
 </resources>
