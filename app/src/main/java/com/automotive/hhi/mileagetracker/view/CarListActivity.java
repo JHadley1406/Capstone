@@ -16,9 +16,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.automotive.hhi.mileagetracker.IntentContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.CarAdapter;
+import com.automotive.hhi.mileagetracker.model.data.Car;
+import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.presenter.CarListPresenter;
+import com.automotive.hhi.mileagetracker.view.viewholders.CarViewHolder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,7 +30,6 @@ import butterknife.ButterKnife;
 public class CarListActivity extends AppCompatActivity implements CarListView, AddCarFragment.OnFragmentInteractionListener {
 
     private final String LOG_TAG = CarListActivity.class.getSimpleName();
-    private final int LOADER_ID = 12345123;
 
     @Bind(R.id.car_list_fab)
     public FloatingActionButton mFab;
@@ -64,9 +67,18 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
 
     @Override
     public void showCars(CarAdapter cars) {
-        Log.i(LOG_TAG, "In showCars");
         mCarRecyclerView.setAdapter(cars);
         cars.notifyDataSetChanged();
+        /*
+        if(cars.getCursor().getCount() == 0){
+            addCar();
+        } else if(cars.getCursor().getCount() == 1){
+            Car car = CarFactory.fromCursor(cars.getCursor());
+            Intent carDetailIntent = new Intent(getApplicationContext(), CarDetailActivity.class);
+            carDetailIntent.putExtra(IntentContract.CAR_ID, car.getId());
+            launchCarDetail(carDetailIntent);
+        }*/
+
     }
 
     @Override
@@ -92,10 +104,9 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
         }
     }
 
-    private void preparePresenter(){
-        mCarListPresenter = new CarListPresenter();
+    private void preparePresenter() {
+        mCarListPresenter = new CarListPresenter(getApplicationContext(), getLoaderManager());
         mCarListPresenter.attachView(this);
-        getLoaderManager().initLoader(LOADER_ID, null, mCarListPresenter);
     }
 
     @Override
@@ -115,8 +126,4 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
         startActivity(carDetailIntent);
     }
 
-    @Override
-    public LoaderManager getLoaderManager(){
-        return getLoaderManager();
-    }
 }

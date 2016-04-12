@@ -23,19 +23,25 @@ import com.automotive.hhi.mileagetracker.view.CarListView;
 public class CarListPresenter implements Presenter<CarListView>, ViewHolderOnClickListener<Car>, LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = CarListPresenter.class.getSimpleName();
+    private final int LOADER_ID = 12345123;
 
 
     private CarListView mCarListView;
     private Context mContext;
     private CarAdapter mCarListAdapter;
+    private LoaderManager mLoaderManager;
 
+    public CarListPresenter(Context context, LoaderManager loaderManager){
+        mContext = context;
+        mLoaderManager = loaderManager;
+    }
 
     @Override
     public void attachView(CarListView view) {
         mCarListView = view;
-        mContext = view.getContext();
         mCarListAdapter = new CarAdapter(mContext, null, this);
-        mCarListView.
+        mLoaderManager.initLoader(LOADER_ID, null, this);
+
     }
 
     @Override
@@ -59,22 +65,17 @@ public class CarListPresenter implements Presenter<CarListView>, ViewHolderOnCli
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data.getCount() == 0){
-            mCarListView.addCar();
-        } else if(data.getCount() == 1){
-            data.moveToFirst();
-            Car car = CarFactory.fromCursor(data);
-            Intent carDetailIntent = new Intent(mContext, CarDetailActivity.class);
-            carDetailIntent.putExtra(IntentContract.CAR_ID, car.getId());
-            mCarListView.launchCarDetail(carDetailIntent);
-        } else{
-            mCarListAdapter.swapCursor(data);
-            mCarListView.showCars(mCarListAdapter);
-        }
+        mCarListAdapter.changeCursor(data);
+        mCarListView.showCars(mCarListAdapter);
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mCarListView.getLoaderManager().restartLoader(LOADER_ID, null, this);
+        mLoaderManager.restartLoader(LOADER_ID, null, this);
+    }
+
+    private void addCar(){
+        mCarListView.addCar();
     }
 }

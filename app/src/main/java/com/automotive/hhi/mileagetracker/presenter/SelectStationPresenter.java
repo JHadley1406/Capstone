@@ -164,6 +164,9 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void onClick(Station station) {
+        if(station.getId()==0){
+            Cursor fillupCheckCursor = mContext.getContentResolver().query(DataContract.StationTable.CONTENT_URI, null, DataContract.StationTable.NAME + " = " + station.getName() + " AND " + DataContract.StationTable.ADDRESS + " = " station.getAddress(), null);
+        }
         mSelectStationView.addFillup(mCarId, station);
     }
 }
