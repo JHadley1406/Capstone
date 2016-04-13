@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,20 +26,23 @@ import com.automotive.hhi.mileagetracker.view.AddFillupView;
  */
 public class AddFillupPresenter implements Presenter<AddFillupView> {
 
+    private final String LOG_TAG = AddFillupPresenter.class.getSimpleName();
+
     private AddFillupView mAddFillupView;
     private Context mContext;
     private Station mStation;
-    private long mCarId;
+    private Car mCar;
 
-    public AddFillupPresenter(long carId, Station station){
-        mCarId = carId;
+    public AddFillupPresenter(long carId, Station station, Context context){
+        mContext = context;
         mStation = station;
+        getCar(carId);
+
     }
 
     @Override
     public void attachView(AddFillupView view) {
         mAddFillupView = view;
-        mContext = view.getContext();
     }
 
     @Override
@@ -48,17 +52,37 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
     }
 
     public void checkStation(){
-        if(mStation.getId() == 0){
-            Uri newStationUri = mContext.getContentResolver()
-                    .insert(DataContract.StationTable.CONTENT_URI
-                            , StationFactory.toContentValues(mStation));
-            mStation.setId(ContentUris.parseId(newStationUri));
+        if(mStation.getId()==0){
+            Cursor fillupCheckCursor = mContext
+                    .getContentResolver()
+                    .query(DataContract.StationTable.CONTENT_URI
+                            , null
+                            , DataContract.StationTable.NAME
+                            + " = '" + mStation.getName()
+                            + "' AND " + DataContract.StationTable.ADDRESS
+                            + " = '" + mStation.getAddress() + "'", null, null);
+
+            if(fillupCheckCursor == null || !fillupCheckCursor.moveToFirst()){
+                // If the station does not exist in the db, we add it, then add
+                // the returned ID to the mStation object
+                mStation.setId(ContentUris.parseId(mContext.getContentResolver()
+                        .insert(DataContract.StationTable.CONTENT_URI
+                                , StationFactory.toContentValues(mStation))));
+
+            } else {
+                // If the station does exist in the db, we just use the copy in the DB
+                mStation = StationFactory.fromCursor(fillupCheckCursor);
+            }
+            if(fillupCheckCursor != null){
+                fillupCheckCursor.close();
+            }
+
         }
     }
 
     public void insertFillup(Fillup fillup){
         fillup.setStationId(mStation.getId());
-        fillup.setCarId(mCarId);
+        fillup.setCarId(mCar.getId());
         calculateMpg(fillup);
         mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI
                 , FillupFactory.toContentValues(fillup));
@@ -80,33 +104,38 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
     }
 
     private void calculateMpg(Fillup fillup){
-        fillup.setCarId(mCarId);
         String sortOrder = "date DESC";
+        // fillupCount is at least 1, since we're passing one into this method
         int fillupCount = 1;
-        double mileageTotal = 0;
-        Cursor allFillups = mContext.getContentResolver().query(DataContract.FillupTable.CONTENT_URI, null, DataContract.FillupTable.CAR + " = " + mCarId, null, sortOrder);
+        double mpgTotal = 0;
+        Cursor allFillups = mContext.getContentResolver().query(DataContract.FillupTable.CONTENT_URI, null, DataContract.FillupTable.CAR + " = " + mCar.getId(), null, sortOrder);
         // fillup MPG is calculated by subtracting the previous fillup's mileage
         // from the current fillup's mileage, then dividing by
         // the gallons of fuel in this fillup
-        if(allFillups != null) {
-            if (allFillups.moveToFirst()) {
-                fillupCount = allFillups.getCount();
-                Fillup prevFillup = FillupFactory.fromCursor(allFillups);
-                fillup.setFillupMpg((fillup.getFillupMileage() - prevFillup.getFillupMileage()) / fillup.getGallons());
-            }
+        if(allFillups != null && allFillups.moveToFirst()) {
+            fillupCount += allFillups.getCount();
+            Fillup prevFillup = FillupFactory.fromCursor(allFillups);
+            fillup.setFillupMpg((fillup.getFillupMileage() - prevFillup.getFillupMileage()) / fillup.getGallons());
+            mpgTotal = prevFillup.getFillupMpg() + fillup.getFillupMpg();
 
             while (allFillups.moveToNext()) {
-                mileageTotal += allFillups.getInt(allFillups.getColumnIndexOrThrow(DataContract.FillupTable.MPG));
+                mpgTotal += allFillups.getInt(allFillups.getColumnIndexOrThrow(DataContract.FillupTable.MPG));
             }
-            mileageTotal += fillup.getFillupMpg();
+
+
             allFillups.close();
+        } else {
+            fillup.setFillupMpg((fillup.getFillupMileage() - mCar.getStartingMileage() / fillup.getGallons()));
+            mpgTotal = fillup.getFillupMpg();
         }
-        Cursor carCursor = mContext.getContentResolver().query(DataContract.CarTable.CONTENT_URI, null, DataContract.CarTable._ID + " = " + mCarId, null, null);
-        if(carCursor != null && carCursor.moveToFirst()){
-            Car car = CarFactory.fromCursor(carCursor);
-            car.setAvgMpg(mileageTotal/fillupCount);
-            mContext.getContentResolver().insert(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(car));
-            mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI, FillupFactory.toContentValues(fillup));
+        mCar.setAvgMpg(mpgTotal / fillupCount);
+        mContext.getContentResolver().update(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(mCar), DataContract.CarTable._ID + " = " + mCar.getId(), null);
+    }
+
+    private void getCar(long carId){
+        Cursor carCursor = mContext.getContentResolver().query(DataContract.CarTable.CONTENT_URI, null, DataContract.CarTable._ID + " = " + carId, null, null);
+        if(carCursor != null && carCursor.moveToFirst()) {
+            mCar = CarFactory.fromCursor(carCursor);
             carCursor.close();
         }
     }

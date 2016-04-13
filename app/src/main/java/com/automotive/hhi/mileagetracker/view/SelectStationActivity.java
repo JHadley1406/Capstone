@@ -1,10 +1,14 @@
 package com.automotive.hhi.mileagetracker.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +34,8 @@ import butterknife.ButterKnife;
 public class SelectStationActivity extends AppCompatActivity implements SelectStationView
         , AddFillupFragment.OnFragmentInteractionListener {
 
+    private final int PERMISSION_REQUEST_CODE = 100;
+
     @Bind(R.id.select_station_nearby_rv)
     public RecyclerView mNearbyStationRV;
     @Bind(R.id.select_station_used_rv)
@@ -50,19 +56,18 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         mUsedStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
         mNearbyStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
         preparePresenter();
-
+        checkPermission();
     }
 
     @Override
     public void showNearby(LocBasedStationAdapter stations) {
         mNearbyStationRV.setAdapter(stations);
-        //stations.notifyDataSetChanged();
     }
 
     @Override
     public void showUsed(StationAdapter stations) {
         mUsedStationRV.setAdapter(stations);
-        //stations.notifyDataSetChanged();
+        stations.notifyDataSetChanged();
     }
 
     @Override
@@ -94,17 +99,36 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         }
     }
 
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext()
+                , android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this
+                    , new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}
+                    , PERMISSION_REQUEST_CODE);
+        } else{
+            mSelectStationPresenter.getNearbyStations();
+        }
+    }
+
     private void preparePresenter(){
-        mSelectStationPresenter = new SelectStationPresenter();
+        mSelectStationPresenter = new SelectStationPresenter(getApplicationContext(), getLoaderManager());
         mSelectStationPresenter.attachView(this);
         mSelectStationPresenter.setCarId(getIntent().getLongExtra(IntentContract.CAR_ID, 1));
-        //mSelectStationPresenter.loadNearbyStations();
-        mSelectStationPresenter.loadUsedStations();
 
     }
 
     @Override
     public void onFragmentInteraction() {
         mAddFillupFragment.dismiss();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            mSelectStationPresenter.getNearbyStations();
+
+        }
     }
 }

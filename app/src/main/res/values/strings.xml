@@ -11,7 +11,7 @@
     <string name="select_station_used_rv">Visted Stations</string>
 
     <string name="car_detail_current_mpg_label">Current MPG</string>
-    <string name="car_detail_avg_mpg_label">Average MPG</string>
+    <string name="car_detail_avg_mpg_label">Average MPG:</string>
     <string name="car_detail_last_fillup_label">Last Fillup Date</string>
     <string name="car_detail_curr_mileage_label">Current Mileage</string>
 
@@ -31,5 +31,12 @@
     <string name="car_detail_add_fillup_button">Add Fill-up</string>
 
     <string name="google_app_id" translatable="false">mileagetracker-1271</string>
+    <string name="fillup_item_station_name_label">Station Name:</string>
+    <string name="fillup_item_gallons_label">Gallons:</string>
+    <string name="fillup_item_price_label">Price: $</string>
+    <string name="fillup_item_octane_label">Octane:</string>
+    <string name="fillup_item_mpg_label">MPG At Fillup:</string>
+    <string name="fillup_item_total_cost_label">Total: $</string>
+    <string name="item_car_mpg_label">Current MPG:</string>
 
 </resources>

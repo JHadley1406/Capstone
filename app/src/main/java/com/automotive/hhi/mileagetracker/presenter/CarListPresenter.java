@@ -34,12 +34,13 @@ public class CarListPresenter implements Presenter<CarListView>, ViewHolderOnCli
     public CarListPresenter(Context context, LoaderManager loaderManager){
         mContext = context;
         mLoaderManager = loaderManager;
+        mCarListAdapter = new CarAdapter(mContext, null, this);
     }
 
     @Override
     public void attachView(CarListView view) {
         mCarListView = view;
-        mCarListAdapter = new CarAdapter(mContext, null, this);
+
         mLoaderManager.initLoader(LOADER_ID, null, this);
 
     }

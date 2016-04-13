@@ -84,7 +84,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mCarId = getArguments().getInt(DataContract.FillupTable.CAR);
+            mCarId = getArguments().getLong(DataContract.FillupTable.CAR);
             mStationId = getArguments().getLong(DataContract.FillupTable.STATION);
         }
 
@@ -95,7 +95,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_fillup, container, false);
-        mAddFillupPresenter = new AddFillupPresenter(mCarId, mStation);
+        mAddFillupPresenter = new AddFillupPresenter(mCarId, mStation, getContext());
         mAddFillupPresenter.attachView(this);
         ButterKnife.bind(this, rootView);
         return rootView;
@@ -136,6 +136,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
         fillup.setFuelCost(Double.parseDouble(mFuelPrice.getText().toString()));
         fillup.setFillupMileage(Double.parseDouble(mMileage.getText().toString()));
         fillup.setOctane(Integer.valueOf(mOctane.getText().toString()));
+        fillup.setDate(System.currentTimeMillis());
         return fillup;
 
     }

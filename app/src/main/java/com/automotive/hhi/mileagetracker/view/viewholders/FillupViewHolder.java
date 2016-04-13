@@ -7,6 +7,8 @@ import android.widget.TextView;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
 
+import org.w3c.dom.Text;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -15,12 +17,12 @@ import butterknife.ButterKnife;
  */
 public class FillupViewHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R.id.item_fillup_station_name)
-    TextView mStationName;
     @Bind(R.id.item_fillup_gallons)
     TextView mGallons;
     @Bind(R.id.item_fillup_cost)
     TextView mFuelCost;
+    @Bind(R.id.item_fillup_total)
+    TextView mTotalCost;
     @Bind(R.id.item_fillup_octane)
     TextView mOctane;
     @Bind(R.id.item_fillup_mpg)
@@ -37,10 +39,11 @@ public class FillupViewHolder extends RecyclerView.ViewHolder {
 
     public void setViewHolder(Fillup fillup){
         mHolderFillup = fillup;
-        mGallons.setText(Double.toString(fillup.getGallons()));
-        mFuelCost.setText(Double.toString(fillup.getFuelCost()));
-        mOctane.setText(Integer.toString(fillup.getOctane()));
-        mFillupMpg.setText(Double.toString(fillup.getFillupMpg()));
+        mGallons.setText(String.format("%.2f", fillup.getGallons()));
+        mFuelCost.setText(String.format("%.2f", fillup.getFuelCost()));
+        mTotalCost.setText(String.format("%.2f", fillup.getTotalCost()));
+        mOctane.setText(String.format("%d", fillup.getOctane()));
+        mFillupMpg.setText(String.format("%.1f", fillup.getFillupMpg()));
         mDate.setText(fillup.getReadableDate());
     }
 }

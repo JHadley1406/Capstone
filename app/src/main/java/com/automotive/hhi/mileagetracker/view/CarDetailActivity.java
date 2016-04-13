@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,8 @@ import butterknife.OnClick;
 
 public class CarDetailActivity extends AppCompatActivity implements CarDetailView {
 
+    private final String LOG_TAG = CarDetailActivity.class.getSimpleName();
+
     @Bind(R.id.car_detail_name)
     public TextView mCarName;
     @Bind(R.id.car_detail_make)
@@ -41,14 +44,8 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     public TextView mCarModel;
     @Bind(R.id.car_detail_year)
     public TextView mCarYear;
-    @Bind(R.id.car_detail_current_mileage)
-    public TextView mCurrentMileage;
     @Bind(R.id.car_detail_avg_mpg)
     public TextView mAverageMpg;
-    @Bind(R.id.car_detail_current_mpg)
-    public TextView mCurrentMpg;
-    @Bind(R.id.car_detail_last_fillup_date)
-    public TextView mLastFillupDate;
     @Bind(R.id.car_detail_fillups_rv)
     public RecyclerView mFillupRecyclerView;
     @Bind(R.id.car_detail_add_fillup)
@@ -75,6 +72,21 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         mCarDetailPresenter.launchSelectStation();
 
     }
+
+    @Override
+    public void launchSelectStation(Intent selectStationIntent) {
+        startActivityForResult(selectStationIntent, IntentContract.DETAIL_TO_STATION_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == IntentContract.DETAIL_TO_STATION_CODE){
+            if(resultCode == RESULT_OK){
+
+            }
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -105,32 +117,29 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
 
     @Override
     public void showFillups(FillupAdapter fillups) {
+        Log.i(LOG_TAG, "Showing fillups");
         mFillupRecyclerView.setAdapter(fillups);
-        //fillups.notifyDataSetChanged();
+        fillups.notifyDataSetChanged();
     }
 
     @Override
     public void setMileageData(Fillup fillup){
 
-        mCurrentMileage.setText(Double.toString(fillup.getFillupMileage()));
-        mCurrentMpg.setText(Double.toString(fillup.getFillupMpg()));
-        mLastFillupDate.setText(fillup.getReadableDate());
+        //mCurrentMileage.setText(String.format("%.1f", fillup.getFillupMileage()));
+        //mLastFillupDate.setText(fillup.getReadableDate());
     }
 
 
     @Override
     public void showCar(Car car) {
-        mAverageMpg.setText(Double.toString(car.getAvgMpg()));
+        mAverageMpg.setText(String.format("%.1f", car.getAvgMpg()));
         mCarName.setText(car.getName());
         mCarMake.setText(car.getMake());
         mCarModel.setText(car.getModel());
-        mCarYear.setText(Integer.toString(car.getYear()));
+        mCarYear.setText(String.format("%d", car.getYear()));
     }
 
-    @Override
-    public void launchSelectStation(Intent selectStationIntent) {
-        startActivity(selectStationIntent);
-    }
+
 
     @Override
     public Context getContext() {
@@ -139,10 +148,10 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
 
 
     private void preparePresenter(){
-        mCarDetailPresenter = new CarDetailPresenter();
+        mCarDetailPresenter = new CarDetailPresenter(getApplicationContext()
+                , getLoaderManager()
+                , getIntent().getLongExtra(IntentContract.CAR_ID, 1));
         mCarDetailPresenter.attachView(this);
-        mCarDetailPresenter.setCurrentCarid(getIntent().getLongExtra(IntentContract.CAR_ID, 1));
-        mCarDetailPresenter.loadFillups();
         mCarDetailPresenter.loadCar();
 
     }

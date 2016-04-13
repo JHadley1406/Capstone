@@ -18,6 +18,10 @@ public class Fillup {
     private int octane;
     private long date;
 
+    public double getTotalCost() {
+        return getFuelCost()*getGallons();
+    }
+
     public long getId() {
         return id;
     }

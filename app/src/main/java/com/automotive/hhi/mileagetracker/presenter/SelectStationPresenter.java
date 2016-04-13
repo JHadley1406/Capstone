@@ -1,9 +1,12 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -42,39 +45,38 @@ import java.util.jar.Manifest;
 public class SelectStationPresenter implements Presenter<SelectStationView>
         , GoogleApiClient.ConnectionCallbacks
         , GoogleApiClient.OnConnectionFailedListener
-        , ViewHolderOnClickListener<Station> {
+        , ViewHolderOnClickListener<Station>
+        , LoaderManager.LoaderCallbacks<Cursor>{
 
     private final String LOG_TAG = SelectStationPresenter.class.getSimpleName();
+    private final int USED_STATION_LOADER_ID = 837294056;
 
-    private final int PERMISSION_REQUEST_CODE = 100;
+
 
     private SelectStationView mSelectStationView;
     private LocBasedStationAdapter mNearbyAdapter;
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
     private List<Station> mStations;
+    private StationAdapter mStationAdapter;
+    private LoaderManager mLoaderManager;
 
     public long mCarId;
 
-    public SelectStationPresenter(){
+    public SelectStationPresenter(Context context, LoaderManager loaderManager){
+        mContext = context;
+        mLoaderManager = loaderManager;
         mStations = new ArrayList<>();
+        mStationAdapter = new StationAdapter(mContext, null, this);
     }
 
     @Override
     public void attachView(SelectStationView view) {
         mSelectStationView = view;
-        mContext = mSelectStationView.getContext();
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(mContext)
-                .addApiIfAvailable(LocationServices.API)
-                .addApiIfAvailable(Places.GEO_DATA_API)
-                .addApiIfAvailable(Places.PLACE_DETECTION_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        mGoogleApiClient.connect();
+        buildGoogleApiClient();
         mNearbyAdapter = new LocBasedStationAdapter(mStations, this);
         loadNearbyStations();
+        mLoaderManager.initLoader(USED_STATION_LOADER_ID, null, this);
     }
 
     @Override
@@ -86,6 +88,8 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         }
     }
 
+
+
     public void loadNearbyStations(){
         mSelectStationView.showNearby(mNearbyAdapter);
     }
@@ -94,29 +98,16 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         mNearbyAdapter.updateStations(mStations);
     }
 
-
-
-    public void loadUsedStations(){
-        Cursor usedStationCursor = mContext.getContentResolver()
-                .query(DataContract.StationTable.CONTENT_URI
-                        , null, null, null, null);
-        if(usedStationCursor == null || !usedStationCursor.moveToFirst()){
-            insertTestData();
-        } else {
-            StationAdapter adapter = new StationAdapter(mContext, usedStationCursor, this);
-            mSelectStationView.showUsed(adapter);
-        }
-
-    }
-
+    //TODO: Remove after testing is done
     private void insertTestData(){
         Station station = new Station();
         station.setLat(9999);
         station.setLon(9999);
         station.setName("Test Station");
         station.setAddress("123 Test St. San Jose CA, 95113");
-        mContext.getContentResolver().insert(DataContract.StationTable.CONTENT_URI, StationFactory.toContentValues(station));
-        loadUsedStations();
+        mContext.getContentResolver()
+                .insert(DataContract.StationTable.CONTENT_URI
+                        , StationFactory.toContentValues(station));
     }
 
     public void setCarId(long carId){
@@ -125,16 +116,17 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.i(LOG_TAG, "In onConnected");
-        if(ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions((Activity)mSelectStationView, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-        } else{
-            PendingResult<PlaceLikelihoodBuffer> nearbyStationBuffer = Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
+        try {
+            PendingResult<PlaceLikelihoodBuffer> nearbyStationBuffer =
+                    Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
             nearbyStationBuffer.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
                 public void onResult(PlaceLikelihoodBuffer placeLikelihoods) {
-                    for(PlaceLikelihood likelyStation : placeLikelihoods){
-                        if(likelyStation.getPlace().getPlaceTypes().contains(Place.TYPE_GAS_STATION)){
+                    for (PlaceLikelihood likelyStation : placeLikelihoods) {
+                        if (likelyStation
+                                .getPlace()
+                                .getPlaceTypes()
+                                .contains(Place.TYPE_GAS_STATION)) {
                             Station station = new Station();
                             station.setId(0);
                             station.setName(likelyStation.getPlace().getName().toString());
@@ -148,8 +140,9 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
                     updateNearbyStations();
                 }
             });
+        } catch (SecurityException e){
+            Log.e(LOG_TAG, "Security Exception : " + e.toString());
         }
-
     }
 
     @Override
@@ -164,9 +157,48 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void onClick(Station station) {
-        if(station.getId()==0){
-            Cursor fillupCheckCursor = mContext.getContentResolver().query(DataContract.StationTable.CONTENT_URI, null, DataContract.StationTable.NAME + " = " + station.getName() + " AND " + DataContract.StationTable.ADDRESS + " = " station.getAddress(), null);
-        }
+
         mSelectStationView.addFillup(mCarId, station);
     }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(mContext
+                , DataContract.StationTable.CONTENT_URI
+                , null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(data == null || !data.moveToFirst()){
+            insertTestData();
+        }
+        mStationAdapter.changeCursor(data);
+        mSelectStationView.showUsed(mStationAdapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mLoaderManager.restartLoader(USED_STATION_LOADER_ID, null, this);
+    }
+
+    private void buildGoogleApiClient(){
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(mContext)
+                .addApiIfAvailable(LocationServices.API)
+                .addApiIfAvailable(Places.GEO_DATA_API)
+                .addApiIfAvailable(Places.PLACE_DETECTION_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+
+    public void getNearbyStations(){
+        if(mGoogleApiClient == null){
+            buildGoogleApiClient();
+        }
+        mGoogleApiClient.connect();
+    }
+
 }
