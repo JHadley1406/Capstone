@@ -53,7 +53,7 @@ public class CarListPresenter implements Presenter<CarListView>, ViewHolderOnCli
     @Override
     public void onClick(Car car) {
         Intent carDetailIntent = new Intent(mContext, CarDetailActivity.class);
-        carDetailIntent.putExtra(IntentContract.CAR_ID, car.getId());
+        carDetailIntent.putExtra(IntentContract.CAR, car);
         mCarListView.launchCarDetail(carDetailIntent);
     }
 

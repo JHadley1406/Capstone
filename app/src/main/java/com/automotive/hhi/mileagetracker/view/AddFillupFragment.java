@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.automotive.hhi.mileagetracker.R;
+import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
@@ -25,21 +26,15 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AddFillupFragment.OnFragmentInteractionListener} interface
+ * {@link AddFillupFragment.OnFillupFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link AddFillupFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class AddFillupFragment extends DialogFragment implements AddFillupView {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private long mCarId;
-    private long mStationId;
-    private static Station mStation;
+    private Car mCar;
+    private Station mStation;
 
     @Bind(R.id.add_fillup_fuel_amount)
     public EditText mFuelAmount;
@@ -60,18 +55,15 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param carId PK of car being filled up.
+     * @param car car object being filled up.
      * @param station station object at which the car is being filled up.
      * @return A new instance of fragment AddFillupFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static AddFillupFragment newInstance(long carId, Station station) {
+    public static AddFillupFragment newInstance(Car car, Station station) {
         AddFillupFragment fragment = new AddFillupFragment();
         Bundle args = new Bundle();
-        args.putLong(DataContract.FillupTable.CAR, carId);
-        args.putLong(DataContract.FillupTable.STATION, station.getId());
-        // FIXME: 4/6/16
-        mStation = station;
+        args.putParcelable(DataContract.FillupTable.CAR, car);
+        args.putParcelable(DataContract.FillupTable.STATION, station);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,8 +76,8 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mCarId = getArguments().getLong(DataContract.FillupTable.CAR);
-            mStationId = getArguments().getLong(DataContract.FillupTable.STATION);
+            mCar = getArguments().getParcelable(DataContract.FillupTable.CAR);
+            mStation = getArguments().getParcelable(DataContract.FillupTable.STATION);
         }
 
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
@@ -95,7 +87,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_fillup, container, false);
-        mAddFillupPresenter = new AddFillupPresenter(mCarId, mStation, getContext());
+        mAddFillupPresenter = new AddFillupPresenter(mCar.getId(), mStation, getContext());
         mAddFillupPresenter.attachView(this);
         ButterKnife.bind(this, rootView);
         return rootView;
@@ -152,7 +144,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFillupFragmentInteractionListener {
-        public void onFillupFragmentInteraction();
+        void onFillupFragmentInteraction();
     }
 
 }

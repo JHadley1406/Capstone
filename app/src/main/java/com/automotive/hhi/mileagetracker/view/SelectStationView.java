@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
+import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface SelectStationView extends MvpView {
 
     void showUsed(StationAdapter stations);
 
-    void addFillup(long carId, Station station);
+    void addFillup(Car car, Station station);
 
     void launchGPSAlert();
 

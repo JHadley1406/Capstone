@@ -24,6 +24,7 @@ import android.util.Log;
 
 import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
+import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
@@ -69,7 +70,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
 
-    public long mCarId;
+    public Car mCar;
 
     public SelectStationPresenter(Context context, LoaderManager loaderManager){
         mContext = context;
@@ -120,8 +121,8 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
                         , StationFactory.toContentValues(station));
     }
 
-    public void setCarId(long carId){
-        mCarId = carId;
+    public void setCar(Car car){
+        mCar = car;
     }
 
     @Override
@@ -167,7 +168,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void onClick(Station station) {
-        mSelectStationView.addFillup(mCarId, station);
+        mSelectStationView.addFillup(mCar, station);
     }
 
     @Override

@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.automotive.hhi.mileagetracker.R;
+import com.automotive.hhi.mileagetracker.model.data.Fillup;
 import com.automotive.hhi.mileagetracker.model.data.FillupFactory;
+import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.FillupViewHolder;
 
 /**
@@ -16,6 +18,7 @@ import com.automotive.hhi.mileagetracker.view.viewholders.FillupViewHolder;
 public class FillupAdapter extends CursorRecyclerViewAdapter<FillupViewHolder> {
 
     private Context mContext;
+    private ViewHolderOnClickListener<Fillup> mFillupOnClickListener;
 
     public FillupAdapter(Context context, Cursor cursor){
         super(context, cursor);
@@ -24,7 +27,7 @@ public class FillupAdapter extends CursorRecyclerViewAdapter<FillupViewHolder> {
 
     @Override
     public void onBindViewHolder(FillupViewHolder viewHolder, Cursor cursor) {
-        viewHolder.setViewHolder(FillupFactory.fromCursor(cursor));
+        viewHolder.setViewHolder(FillupFactory.fromCursor(cursor), mFillupOnClickListener);
 
     }
 

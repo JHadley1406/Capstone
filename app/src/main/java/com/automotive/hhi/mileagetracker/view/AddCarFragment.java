@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
+import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.presenter.AddCarPresenter;
 
 import javax.annotation.Resource;
@@ -35,14 +36,8 @@ import butterknife.OnClick;
  * create an instance of this fragment.
  */
 public class AddCarFragment extends DialogFragment implements AddCarView {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Car mCar;
 
     @Bind(R.id.add_car_name)
     public EditText mName;
@@ -64,16 +59,14 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param car The car object being edited.
      * @return A new instance of fragment AddCarFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddCarFragment newInstance(String param1, String param2) {
+    public static AddCarFragment newInstance(Car car) {
         AddCarFragment fragment = new AddCarFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(DataContract.CAR_TABLE, car);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,8 +81,8 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
 
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mCar = getArguments().getParcelable(DataContract.CAR_TABLE);
+            setFields();
         }
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
     }
@@ -122,7 +115,7 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
             mListener = (OnCarFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFillupFragmentInteractionListener");
+                    + " must implement OnCarFragmentInteractionListener");
         }
     }
 
@@ -133,6 +126,12 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
         mAddCarPresenter.detachView();
     }
 
+    private void setFields(){
+        mName.setText(mCar.getName());
+        mMake.setText(mCar.getMake());
+        mModel.setText(mCar.getModel());
+        mYear.setText(String.format("%d", mCar.getYear()));
+    }
 
     private Car buildCar(){
         Car car = new Car();
@@ -155,8 +154,7 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnCarFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onCarFragmentInteraction();
+        void onCarFragmentInteraction();
     }
 
 }

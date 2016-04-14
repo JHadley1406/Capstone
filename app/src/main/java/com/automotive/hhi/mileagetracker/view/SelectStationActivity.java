@@ -27,6 +27,7 @@ import com.automotive.hhi.mileagetracker.IntentContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
+import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.presenter.SelectStationPresenter;
 
@@ -76,8 +77,8 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     }
 
     @Override
-    public void addFillup(long carId, Station station) {
-        mAddFillupFragment = AddFillupFragment.newInstance(carId, station);
+    public void addFillup(Car car, Station station) {
+        mAddFillupFragment = AddFillupFragment.newInstance(car, station);
         mAddFillupFragment.show(getFragmentManager(), "add_fillup_fragment");
     }
 
@@ -120,7 +121,7 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     private void preparePresenter(){
         mSelectStationPresenter = new SelectStationPresenter(getApplicationContext(), getLoaderManager());
         mSelectStationPresenter.attachView(this);
-        mSelectStationPresenter.setCarId(getIntent().getLongExtra(IntentContract.CAR_ID, 1));
+        mSelectStationPresenter.setCar((Car) getIntent().getParcelableExtra(IntentContract.CAR));
 
     }
 
