@@ -1,15 +1,21 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,6 +66,8 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     private List<Station> mStations;
     private StationAdapter mStationAdapter;
     private LoaderManager mLoaderManager;
+    private LocationManager mLocationManager;
+    private LocationListener mLocationListener;
 
     public long mCarId;
 
@@ -68,6 +76,8 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         mLoaderManager = loaderManager;
         mStations = new ArrayList<>();
         mStationAdapter = new StationAdapter(mContext, null, this);
+        mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
     }
 
     @Override
@@ -141,7 +151,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
                 }
             });
         } catch (SecurityException e){
-            Log.e(LOG_TAG, "Security Exception : " + e.toString());
+            Log.e(LOG_TAG, "Security Exception Caught: " + e.toString());
         }
     }
 
@@ -157,7 +167,6 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void onClick(Station station) {
-
         mSelectStationView.addFillup(mCarId, station);
     }
 
@@ -194,11 +203,52 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     }
 
 
-    public void getNearbyStations(){
+    private void getNearbyStations(){
+        if (ContextCompat.checkSelfPermission(mContext
+                , android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED){
+            mLocationManager.removeUpdates(mLocationListener);
+        }
         if(mGoogleApiClient == null){
             buildGoogleApiClient();
         }
         mGoogleApiClient.connect();
     }
+
+    public void updateLocation() {
+        if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            mSelectStationView.launchGPSAlert();
+        }
+        try {
+            mLocationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.i(LOG_TAG, "location changed");
+                    if(location.getAccuracy() != 0){
+                        getNearbyStations();
+                    }
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 0, mLocationListener);
+        } catch(SecurityException e){
+            Log.e(LOG_TAG, "Security Exception Caught: " + e.toString());
+        }
+    }
+
 
 }

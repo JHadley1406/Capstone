@@ -27,7 +27,7 @@ import com.automotive.hhi.mileagetracker.view.viewholders.CarViewHolder;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CarListActivity extends AppCompatActivity implements CarListView, AddCarFragment.OnFragmentInteractionListener {
+public class CarListActivity extends AppCompatActivity implements CarListView, AddCarFragment.OnCarFragmentInteractionListener {
 
     private final String LOG_TAG = CarListActivity.class.getSimpleName();
 
@@ -110,7 +110,7 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
     }
 
     @Override
-    public void onFragmentInteraction() {
+    public void onCarFragmentInteraction() {
         mAddCarFragment.dismiss();
         mCarRecyclerView.getAdapter().notifyDataSetChanged();
     }

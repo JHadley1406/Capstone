@@ -54,7 +54,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     @Bind(R.id.add_fillup_layout)
     public LinearLayout mInputContainer;
     private AddFillupPresenter mAddFillupPresenter;
-    private OnFragmentInteractionListener mListener;
+    private OnFillupFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -107,7 +107,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
         mAddFillupPresenter.validateInput(mInputContainer);
         mAddFillupPresenter.insertFillup(buildFillup());
         if (mListener != null) {
-            mListener.onFragmentInteraction();
+            mListener.onFillupFragmentInteraction();
         }
     }
 
@@ -115,10 +115,10 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnFillupFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFillupFragmentInteractionListener");
         }
     }
 
@@ -151,8 +151,8 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction();
+    public interface OnFillupFragmentInteractionListener {
+        public void onFillupFragmentInteraction();
     }
 
 }

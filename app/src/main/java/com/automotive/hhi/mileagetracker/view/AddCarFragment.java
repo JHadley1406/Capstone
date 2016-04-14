@@ -29,7 +29,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AddCarFragment.OnFragmentInteractionListener} interface
+ * {@link AddCarFragment.OnCarFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link AddCarFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -52,15 +52,13 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     public EditText mModel;
     @Bind(R.id.add_car_year)
     public EditText mYear;
-    @Bind(R.id.add_car_mileage)
-    public EditText mMileage;
     @Bind(R.id.add_car_submit)
     public Button mAddCar;
     @Bind(R.id.add_car_input_container)
     public LinearLayout mInputContainer;
     private AddCarPresenter mAddCarPresenter;
 
-    private OnFragmentInteractionListener mListener;
+    private OnCarFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -112,7 +110,7 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
         if(mAddCarPresenter.validateInput(mInputContainer)){
             mAddCarPresenter.insertCar(buildCar());
             if (mListener != null) {
-                mListener.onFragmentInteraction();
+                mListener.onCarFragmentInteraction();
             }
         }
     }
@@ -121,10 +119,10 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnCarFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFillupFragmentInteractionListener");
         }
     }
 
@@ -142,7 +140,6 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
         car.setMake(mMake.getText().toString());
         car.setModel(mModel.getText().toString());
         car.setYear(Integer.valueOf(mYear.getText().toString()));
-        car.setStartingMileage(Double.parseDouble(mMileage.getText().toString()));
         car.setAvgMpg(0.0);
         return car;
     }
@@ -157,9 +154,9 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnCarFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction();
+        public void onCarFragmentInteraction();
     }
 
 }

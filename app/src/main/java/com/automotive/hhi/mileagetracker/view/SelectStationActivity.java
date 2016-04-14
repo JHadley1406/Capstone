@@ -1,10 +1,15 @@
 package com.automotive.hhi.mileagetracker.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -32,7 +37,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class SelectStationActivity extends AppCompatActivity implements SelectStationView
-        , AddFillupFragment.OnFragmentInteractionListener {
+        , AddFillupFragment.OnFillupFragmentInteractionListener {
 
     private final int PERMISSION_REQUEST_CODE = 100;
 
@@ -108,7 +113,7 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
                     , new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}
                     , PERMISSION_REQUEST_CODE);
         } else{
-            mSelectStationPresenter.getNearbyStations();
+            mSelectStationPresenter.updateLocation();
         }
     }
 
@@ -120,15 +125,38 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     }
 
     @Override
-    public void onFragmentInteraction() {
+    public void onFillupFragmentInteraction() {
         mAddFillupFragment.dismiss();
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            mSelectStationPresenter.getNearbyStations();
+            mSelectStationPresenter.updateLocation();
 
         }
+    }
+
+    @Override
+    public void launchGPSAlert(){
+        AlertDialog.Builder gpsAlertDialog = new AlertDialog.Builder(this);
+        gpsAlertDialog.setMessage(R.string.gps_alert_message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.gps_alert_settings, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton(R.string.gps_alert_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .create()
+                .show();
     }
 }

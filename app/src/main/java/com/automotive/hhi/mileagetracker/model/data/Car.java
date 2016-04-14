@@ -10,7 +10,6 @@ public class Car {
     private String make;
     private String model;
     private int year;
-    private double startingMileage;
     private double avgMpg;
 
     public long getId() {
@@ -51,14 +50,6 @@ public class Car {
 
     public void setYear(int year) {
         this.year = year;
-    }
-
-    public double getStartingMileage() {
-        return startingMileage;
-    }
-
-    public void setStartingMileage(double startingMileage) {
-        this.startingMileage = startingMileage;
     }
 
     public double getAvgMpg() {

@@ -30,16 +30,12 @@ public class CarFactory  {
         car.setYear(cursor
                 .getInt(cursor
                         .getColumnIndexOrThrow(DataContract.CarTable.YEAR)));
-        car.setStartingMileage(cursor
-                .getDouble(cursor
-                        .getColumnIndexOrThrow(DataContract.CarTable.INITMILES)));
         return car;
     }
 
     public static ContentValues toContentValues(Car car){
         ContentValues vals = new ContentValues();
         vals.put(DataContract.CarTable.AVGMPG, car.getAvgMpg());
-        vals.put(DataContract.CarTable.INITMILES, car.getStartingMileage());
         vals.put(DataContract.CarTable.MAKE, car.getMake());
         vals.put(DataContract.CarTable.MODEL, car.getModel());
         vals.put(DataContract.CarTable.NAME, car.getName());

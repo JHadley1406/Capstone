@@ -19,4 +19,6 @@ public interface SelectStationView extends MvpView {
 
     void addFillup(long carId, Station station);
 
+    void launchGPSAlert();
+
 }

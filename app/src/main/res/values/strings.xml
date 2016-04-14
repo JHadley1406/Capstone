@@ -38,5 +38,8 @@
     <string name="fillup_item_mpg_label">MPG At Fillup:</string>
     <string name="fillup_item_total_cost_label">Total: $</string>
     <string name="item_car_mpg_label">Current MPG:</string>
+    <string name="gps_alert_message">GPS is disabled.  Please enable to view nearby Gas Stations</string>
+    <string name="gps_alert_settings">Settings</string>
+    <string name="gps_alert_cancel">Cancel</string>
 
 </resources>

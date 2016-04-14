@@ -21,19 +21,13 @@
         <EditText
             android:id="@+id/add_car_model"
             android:hint="@string/add_car_model_hint"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/add_car_year"
             android:hint="@string/add_car_year_hint"
             android:inputType="number"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <EditText
-            android:id="@+id/add_car_mileage"
-            android:hint="@string/add_car_mileage_hint"
-            android:layout_width="wrap_content"
-            android:inputType="numberDecimal"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/add_car_submit"

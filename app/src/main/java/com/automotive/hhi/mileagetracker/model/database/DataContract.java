@@ -26,7 +26,6 @@ public class DataContract {
         public static final String MAKE = "make";
         public static final String MODEL = "model";
         public static final String YEAR = "year";
-        public static final String INITMILES = "initialmileage";
         public static final String AVGMPG = "avgmpg";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + CAR_TABLE + " ("
@@ -35,7 +34,6 @@ public class DataContract {
                 + MAKE + " TEXT NULL, "
                 + MODEL + " TEXT NULL, "
                 + YEAR + " INTEGER NULL, "
-                + INITMILES + " REAL NOT NULL, "
                 + AVGMPG + " REAL NULL);";
 
         public static Uri CONTENT_URI =
