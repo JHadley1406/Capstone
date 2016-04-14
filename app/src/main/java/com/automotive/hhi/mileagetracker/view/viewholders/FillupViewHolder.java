@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
+import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
 
 import org.w3c.dom.Text;
 
@@ -37,7 +38,7 @@ public class FillupViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setViewHolder(Fillup fillup){
+    public void setViewHolder(Fillup fillup, final ViewHolderOnClickListener<Fillup> onClickListener){
         mHolderFillup = fillup;
         mGallons.setText(String.format("%.2f", fillup.getGallons()));
         mFuelCost.setText(String.format("%.2f", fillup.getFuelCost()));
@@ -45,5 +46,12 @@ public class FillupViewHolder extends RecyclerView.ViewHolder {
         mOctane.setText(String.format("%d", fillup.getOctane()));
         mFillupMpg.setText(String.format("%.1f", fillup.getFillupMpg()));
         mDate.setText(fillup.getReadableDate());
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClick(mHolderFillup);
+            }
+        });
     }
 }

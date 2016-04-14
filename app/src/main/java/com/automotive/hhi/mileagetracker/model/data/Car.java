@@ -1,9 +1,12 @@
 package com.automotive.hhi.mileagetracker.model.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Josiah Hadley on 3/24/2016.
  */
-public class Car {
+public class Car implements Parcelable {
 
     private long id;
     private String name;
@@ -11,6 +14,17 @@ public class Car {
     private String model;
     private int year;
     private double avgMpg;
+
+    public Car(){}
+
+    public Car(Parcel in){
+        setId(in.readInt());
+        setName(in.readString());
+        setMake(in.readString());
+        setModel(in.readString());
+        setYear(in.readInt());
+        setAvgMpg(in.readDouble());
+    }
 
     public long getId() {
         return id;
@@ -61,6 +75,24 @@ public class Car {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(getId());
+        dest.writeString(getName());
+        dest.writeString(getMake());
+        dest.writeString(getModel());
+        dest.writeInt(getYear());
+        dest.writeDouble(getAvgMpg());
+    }
 
+    public static final Parcelable.Creator<Car> CREATOR = new Parcelable.Creator<Car>(){
+        public Car createFromParcel(Parcel in){return new Car(in);}
+
+        public Car[] newArray(int size){return new Car[size];}
+    };
 }

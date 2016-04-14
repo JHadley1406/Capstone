@@ -1,12 +1,15 @@
 package com.automotive.hhi.mileagetracker.model.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by Josiah Hadley on 3/24/2016.
  */
-public class Fillup {
+public class Fillup implements Parcelable {
 
     private long id;
     private long carId;
@@ -17,6 +20,20 @@ public class Fillup {
     private double fuelCost;
     private int octane;
     private long date;
+
+    public Fillup(){}
+
+    public Fillup(Parcel in){
+        setId(in.readLong());
+        setCarId(in.readLong());
+        setStationId(in.readLong());
+        setFillupMileage(in.readDouble());
+        setFillupMpg(in.readDouble());
+        setGallons(in.readDouble());
+        setFuelCost(in.readDouble());
+        setOctane(in.readInt());
+        setDate(in.readLong());
+    }
 
     public double getTotalCost() {
         return getFuelCost()*getGallons();
@@ -98,4 +115,28 @@ public class Fillup {
     public void setDate(long date) {
         this.date = date;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(getId());
+        dest.writeLong(getCarId());
+        dest.writeLong(getStationId());
+        dest.writeDouble(getFillupMileage());
+        dest.writeDouble(getFillupMpg());
+        dest.writeDouble(getGallons());
+        dest.writeDouble(getFuelCost());
+        dest.writeInt(getOctane());
+        dest.writeLong(getDate());
+    }
+
+    public static final Parcelable.Creator<Fillup> CREATOR = new Parcelable.Creator<Fillup>(){
+        public Fillup createFromParcel(Parcel in){ return new Fillup(in); }
+
+        public Fillup[] newArray(int size){ return new Fillup[size]; }
+    };
 }
