@@ -125,7 +125,7 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
 
             allFillups.close();
         } else {
-            fillup.setFillupMpg((fillup.getFillupMileage() - mCar.getStartingMileage() / fillup.getGallons()));
+            fillup.setFillupMpg((fillup.getFillupMileage() - mCar.getStartingMileage()) / fillup.getGallons());
             mpgTotal = fillup.getFillupMpg();
         }
         mCar.setAvgMpg(mpgTotal / fillupCount);
