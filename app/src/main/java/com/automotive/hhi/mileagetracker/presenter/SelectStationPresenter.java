@@ -58,8 +58,6 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         , LoaderManager.LoaderCallbacks<Cursor>{
 
     private final String LOG_TAG = SelectStationPresenter.class.getSimpleName();
-    private final int USED_STATION_LOADER_ID = 837294056;
-
 
 
     private SelectStationView mSelectStationView;
@@ -89,13 +87,14 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         buildGoogleApiClient();
         mNearbyAdapter = new LocBasedStationAdapter(mStations, this);
         loadNearbyStations();
-        mLoaderManager.initLoader(USED_STATION_LOADER_ID, null, this);
+        mLoaderManager.initLoader(KeyContract.USED_STATION_LOADER_ID, null, this);
     }
 
     @Override
     public void detachView() {
         mSelectStationView = null;
         mContext = null;
+        removeGPSListener();
         if(mGoogleApiClient.isConnected()){
             mGoogleApiClient.disconnect();
         }
@@ -104,6 +103,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
     public Intent returnToCarDetailIntent(){
         Intent backIntent = new Intent(mContext, CarDetailActivity.class);
         backIntent.putExtra(KeyContract.CAR, mCar);
+        removeGPSListener();
         return backIntent;
     }
 
@@ -195,7 +195,7 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mLoaderManager.restartLoader(USED_STATION_LOADER_ID, null, this);
+        mLoaderManager.restartLoader(KeyContract.USED_STATION_LOADER_ID, null, this);
     }
 
     private void buildGoogleApiClient(){
@@ -209,13 +209,16 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
                 .build();
     }
 
-
-    private void getNearbyStations(){
+    private void removeGPSListener(){
         if (ContextCompat.checkSelfPermission(mContext
                 , android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED){
             mLocationManager.removeUpdates(mLocationListener);
         }
+    }
+
+    private void getNearbyStations(){
+        removeGPSListener();
         if(mGoogleApiClient == null){
             buildGoogleApiClient();
         }
