@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
@@ -32,9 +33,6 @@ import butterknife.OnClick;
  * create an instance of this fragment.
  */
 public class AddFillupFragment extends DialogFragment implements AddFillupView {
-
-    private Car mCar;
-    private Station mStation;
 
     @Bind(R.id.add_fillup_fuel_amount)
     public EditText mFuelAmount;
@@ -59,11 +57,12 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
      * @param station station object at which the car is being filled up.
      * @return A new instance of fragment AddFillupFragment.
      */
-    public static AddFillupFragment newInstance(Car car, Station station) {
+    public static AddFillupFragment newInstance(Car car, Station station, Fillup fillup) {
         AddFillupFragment fragment = new AddFillupFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DataContract.FillupTable.CAR, car);
-        args.putParcelable(DataContract.FillupTable.STATION, station);
+        args.putParcelable(KeyContract.CAR, car);
+        args.putParcelable(KeyContract.STATION, station);
+        args.putParcelable(KeyContract.FILLUP, fillup);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,8 +75,11 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mCar = getArguments().getParcelable(DataContract.FillupTable.CAR);
-            mStation = getArguments().getParcelable(DataContract.FillupTable.STATION);
+            mAddFillupPresenter =
+                    new AddFillupPresenter((Fillup) getArguments().getParcelable(KeyContract.FILLUP)
+                    , (Car)getArguments().getParcelable(KeyContract.CAR)
+                    ,(Station) getArguments().getParcelable(KeyContract.STATION)
+                    , getContext());
         }
 
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
@@ -87,9 +89,10 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_fillup, container, false);
-        mAddFillupPresenter = new AddFillupPresenter(mCar.getId(), mStation, getContext());
-        mAddFillupPresenter.attachView(this);
+
+
         ButterKnife.bind(this, rootView);
+        mAddFillupPresenter.attachView(this);
         return rootView;
     }
 
@@ -121,16 +124,21 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
         mAddFillupPresenter.detachView();
     }
 
+    @Override
+    public void setFields(){
+        mFuelAmount.setText(String.format("%.2f", mAddFillupPresenter.getFillup().getGallons()));
+        mFuelPrice.setText(String.format("%.2f", mAddFillupPresenter.getFillup().getFuelCost()));
+        mOctane.setText(String.format("%d", mAddFillupPresenter.getFillup().getOctane()));
+        mMileage.setText(String.format("%.1f", mAddFillupPresenter.getFillup().getFillupMileage()));
+    }
 
-    private Fillup buildFillup(){
-        Fillup fillup = new Fillup();
-        fillup.setGallons(Double.parseDouble(mFuelAmount.getText().toString()));
-        fillup.setFuelCost(Double.parseDouble(mFuelPrice.getText().toString()));
-        fillup.setFillupMileage(Double.parseDouble(mMileage.getText().toString()));
-        fillup.setOctane(Integer.valueOf(mOctane.getText().toString()));
-        fillup.setDate(System.currentTimeMillis());
-        return fillup;
-
+    @Override
+    public void buildFillup(){
+        mAddFillupPresenter.getFillup().setGallons(Double.parseDouble(mFuelAmount.getText().toString()));
+        mAddFillupPresenter.getFillup().setFuelCost(Double.parseDouble(mFuelPrice.getText().toString()));
+        mAddFillupPresenter.getFillup().setFillupMileage(Double.parseDouble(mMileage.getText().toString()));
+        mAddFillupPresenter.getFillup().setOctane(Integer.valueOf(mOctane.getText().toString()));
+        mAddFillupPresenter.getFillup().setDate(System.currentTimeMillis());
     }
 
     /**

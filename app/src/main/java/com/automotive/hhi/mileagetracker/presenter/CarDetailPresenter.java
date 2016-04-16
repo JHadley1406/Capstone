@@ -9,9 +9,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.automotive.hhi.mileagetracker.IntentContract;
+import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
+import com.automotive.hhi.mileagetracker.model.data.Fillup;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.CarDetailView;
 import com.automotive.hhi.mileagetracker.view.SelectStationActivity;
@@ -19,7 +20,9 @@ import com.automotive.hhi.mileagetracker.view.SelectStationActivity;
 /**
  * Created by Josiah Hadley on 3/24/2016.
  */
-public class CarDetailPresenter implements Presenter<CarDetailView>, LoaderManager.LoaderCallbacks<Cursor> {
+public class CarDetailPresenter implements Presenter<CarDetailView>
+        , ViewHolderOnClickListener<Fillup>
+        , LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = CarDetailPresenter.class.getSimpleName();
     private final int DETAIL_FILLUPS_LOADER_ID = 543219876;
@@ -54,10 +57,26 @@ public class CarDetailPresenter implements Presenter<CarDetailView>, LoaderManag
         mCarDetailView.showCar(mCurrentCar);
     }
 
+    public void updateCar(Car car){
+        mCurrentCar = car;
+        loadCar();
+    }
+
     public void launchSelectStation() {
         Intent selectStationIntent = new Intent(mContext, SelectStationActivity.class);
-        selectStationIntent.putExtra(IntentContract.CAR, mCurrentCar);
+        selectStationIntent.putExtra(KeyContract.CAR, mCurrentCar);
         mCarDetailView.launchSelectStation(selectStationIntent);
+    }
+
+
+    @Override
+    public void onClick(Fillup fillup){
+
+    }
+
+
+    public void launchEditCar(){
+        mCarDetailView.launchEditCar(mCurrentCar);
     }
 
     @Override

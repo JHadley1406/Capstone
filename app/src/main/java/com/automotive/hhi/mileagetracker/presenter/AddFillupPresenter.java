@@ -32,11 +32,13 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
     private Context mContext;
     private Station mStation;
     private Car mCar;
+    private Fillup mFillup;
 
-    public AddFillupPresenter(long carId, Station station, Context context){
+    public AddFillupPresenter(Fillup fillup, Car car, Station station, Context context){
         mContext = context;
         mStation = station;
-        getCar(carId);
+        mCar = car;
+        mFillup = fillup;
 
     }
 
@@ -50,6 +52,12 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
         mAddFillupView = null;
         mContext = null;
     }
+
+    public Car getCar(){ return mCar;}
+
+    public Fillup getFillup() { return mFillup; }
+
+    public Station getStation(){ return mStation; }
 
     public void checkStation(){
         if(mStation.getId()==0){
@@ -130,13 +138,5 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
         }
         mCar.setAvgMpg(mpgTotal / fillupCount);
         mContext.getContentResolver().update(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(mCar), DataContract.CarTable._ID + " = " + mCar.getId(), null);
-    }
-
-    private void getCar(long carId){
-        Cursor carCursor = mContext.getContentResolver().query(DataContract.CarTable.CONTENT_URI, null, DataContract.CarTable._ID + " = " + carId, null, null);
-        if(carCursor != null && carCursor.moveToFirst()) {
-            mCar = CarFactory.fromCursor(carCursor);
-            carCursor.close();
-        }
     }
 }

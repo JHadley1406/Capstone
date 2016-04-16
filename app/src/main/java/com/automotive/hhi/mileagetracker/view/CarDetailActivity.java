@@ -2,37 +2,29 @@ package com.automotive.hhi.mileagetracker.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.automotive.hhi.mileagetracker.IntentContract;
+import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
-import com.automotive.hhi.mileagetracker.model.data.Fillup;
-import com.automotive.hhi.mileagetracker.model.data.FillupFactory;
 import com.automotive.hhi.mileagetracker.presenter.CarDetailPresenter;
-
-import org.w3c.dom.Text;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CarDetailActivity extends AppCompatActivity implements CarDetailView {
+public class CarDetailActivity extends AppCompatActivity implements CarDetailView
+        , AddCarFragment.OnCarFragmentInteractionListener {
 
     private final String LOG_TAG = CarDetailActivity.class.getSimpleName();
 
@@ -48,11 +40,16 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     public TextView mAverageMpg;
     @Bind(R.id.car_detail_fillups_rv)
     public RecyclerView mFillupRecyclerView;
+    @Bind(R.id.car_detail_delete_car)
+    public Button mDeleteCar;
+    @Bind(R.id.car_detail_edit_car)
+    public Button mEditCar;
     @Bind(R.id.car_detail_add_fillup)
     public Button mAddFillup;
     @Bind(R.id.car_detail_toolbar)
     public Toolbar mToolbar;
     private CarDetailPresenter mCarDetailPresenter;
+    private AddCarFragment mEditCarFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,14 +70,25 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
 
     }
 
+    @OnClick(R.id.car_detail_edit_car)
+    public void editCar(){
+        mCarDetailPresenter.launchEditCar();
+    }
+
     @Override
     public void launchSelectStation(Intent selectStationIntent) {
-        startActivityForResult(selectStationIntent, IntentContract.DETAIL_TO_STATION_CODE);
+        startActivityForResult(selectStationIntent, KeyContract.DETAIL_TO_STATION_CODE);
+    }
+
+    @Override
+    public void launchEditCar(Car car){
+        mEditCarFragment = AddCarFragment.newInstance(car, true);
+        mEditCarFragment.show(getFragmentManager(), "edit_car_fragment");
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode == IntentContract.DETAIL_TO_STATION_CODE){
+        if(requestCode == KeyContract.DETAIL_TO_STATION_CODE){
             if(resultCode == RESULT_OK){
 
             }
@@ -123,14 +131,6 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     }
 
     @Override
-    public void setMileageData(Fillup fillup){
-
-        //mCurrentMileage.setText(String.format("%.1f", fillup.getFillupMileage()));
-        //mLastFillupDate.setText(fillup.getReadableDate());
-    }
-
-
-    @Override
     public void showCar(Car car) {
         mAverageMpg.setText(String.format("%.1f", car.getAvgMpg()));
         mCarName.setText(car.getName());
@@ -150,9 +150,16 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     private void preparePresenter(){
         mCarDetailPresenter = new CarDetailPresenter(getApplicationContext()
                 , getLoaderManager()
-                , (Car)getIntent().getParcelableExtra(IntentContract.CAR));
+                , (Car)getIntent().getParcelableExtra(KeyContract.CAR));
         mCarDetailPresenter.attachView(this);
         mCarDetailPresenter.loadCar();
+
+    }
+
+    @Override
+    public void onCarFragmentInteraction(Car car) {
+        mEditCarFragment.dismiss();
+        mCarDetailPresenter.updateCar(car);
 
     }
 }

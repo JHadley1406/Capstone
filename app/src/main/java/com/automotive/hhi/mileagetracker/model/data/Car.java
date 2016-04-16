@@ -18,7 +18,7 @@ public class Car implements Parcelable {
     public Car(){}
 
     public Car(Parcel in){
-        setId(in.readInt());
+        setId(in.readLong());
         setName(in.readString());
         setMake(in.readString());
         setModel(in.readString());

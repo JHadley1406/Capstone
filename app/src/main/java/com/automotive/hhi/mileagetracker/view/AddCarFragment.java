@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
@@ -37,8 +38,6 @@ import butterknife.OnClick;
  */
 public class AddCarFragment extends DialogFragment implements AddCarView {
 
-    private Car mCar;
-
     @Bind(R.id.add_car_name)
     public EditText mName;
     @Bind(R.id.add_car_make)
@@ -59,14 +58,16 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param car The car object being edited.
+     * @param car The car object being added or edited.
+     * @param isEdit whether or not we're editing a car or adding a new one
      * @return A new instance of fragment AddCarFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddCarFragment newInstance(Car car) {
+    public static AddCarFragment newInstance(Car car, boolean isEdit) {
         AddCarFragment fragment = new AddCarFragment();
         Bundle args = new Bundle();
-        args.putParcelable(DataContract.CAR_TABLE, car);
+        args.putParcelable(KeyContract.CAR, car);
+        args.putBoolean(KeyContract.IS_EDIT, isEdit);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,13 +79,13 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
+        mAddCarPresenter = new AddCarPresenter();
 
         if (getArguments() != null) {
-            mCar = getArguments().getParcelable(DataContract.CAR_TABLE);
-            setFields();
+            mAddCarPresenter.setCar((Car) getArguments().getParcelable(KeyContract.CAR));
+            mAddCarPresenter.setEdit(getArguments().getBoolean(KeyContract.IS_EDIT));
         }
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
     }
 
     @Override
@@ -92,18 +93,18 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_car, container, false);
-        mAddCarPresenter = new AddCarPresenter();
-        mAddCarPresenter.attachView(this);
         ButterKnife.bind(this, rootView);
+        mAddCarPresenter.attachView(this);
+
         return rootView;
     }
 
     @OnClick(R.id.add_car_submit)
     public void onButtonPressed() {
         if(mAddCarPresenter.validateInput(mInputContainer)){
-            mAddCarPresenter.insertCar(buildCar());
+            mAddCarPresenter.insertCar();
             if (mListener != null) {
-                mListener.onCarFragmentInteraction();
+                mListener.onCarFragmentInteraction(mAddCarPresenter.getCar());
             }
         }
     }
@@ -126,21 +127,23 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
         mAddCarPresenter.detachView();
     }
 
-    private void setFields(){
-        mName.setText(mCar.getName());
-        mMake.setText(mCar.getMake());
-        mModel.setText(mCar.getModel());
-        mYear.setText(String.format("%d", mCar.getYear()));
+    @Override
+    public void setFields(){
+        mName.setText(mAddCarPresenter.getCar().getName());
+        mMake.setText(mAddCarPresenter.getCar().getMake());
+        mModel.setText(mAddCarPresenter.getCar().getModel());
+        mYear.setText(String.format("%d", mAddCarPresenter.getCar().getYear()));
     }
 
-    private Car buildCar(){
-        Car car = new Car();
-        car.setName(mName.getText().toString());
-        car.setMake(mMake.getText().toString());
-        car.setModel(mModel.getText().toString());
-        car.setYear(Integer.valueOf(mYear.getText().toString()));
-        car.setAvgMpg(0.0);
-        return car;
+    @Override
+    public void buildCar(){
+        mAddCarPresenter.getCar().setName(mName.getText().toString());
+        mAddCarPresenter.getCar().setMake(mMake.getText().toString());
+        mAddCarPresenter.getCar().setModel(mModel.getText().toString());
+        mAddCarPresenter.getCar().setYear(Integer.valueOf(mYear.getText().toString()));
+        if(mAddCarPresenter.getCar().getId() == 0){
+            mAddCarPresenter.getCar().setAvgMpg(0.0);
+        }
     }
 
     /**
@@ -154,7 +157,7 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnCarFragmentInteractionListener {
-        void onCarFragmentInteraction();
+        void onCarFragmentInteraction(Car car);
     }
 
 }

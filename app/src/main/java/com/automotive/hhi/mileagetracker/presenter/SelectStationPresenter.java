@@ -22,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
@@ -29,6 +30,7 @@ import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.AddFillupFragment;
+import com.automotive.hhi.mileagetracker.view.CarDetailActivity;
 import com.automotive.hhi.mileagetracker.view.SelectStationView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -99,7 +101,11 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         }
     }
 
-
+    public Intent returnToCarDetailIntent(){
+        Intent backIntent = new Intent(mContext, CarDetailActivity.class);
+        backIntent.putExtra(KeyContract.CAR, mCar);
+        return backIntent;
+    }
 
     public void loadNearbyStations(){
         mSelectStationView.showNearby(mNearbyAdapter);

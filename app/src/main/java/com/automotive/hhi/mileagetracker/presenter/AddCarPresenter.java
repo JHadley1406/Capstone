@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -19,13 +20,24 @@ import com.automotive.hhi.mileagetracker.view.AddCarView;
  */
 public class AddCarPresenter implements Presenter<AddCarView> {
 
+    private final String LOG_TAG = AddCarPresenter.class.getSimpleName();
+
     private AddCarView mAddCarView;
     private Context mContext;
+    private boolean mIsEdit;
+    private Car mCar;
+
+    public AddCarPresenter(){
+    }
 
     @Override
     public void attachView(AddCarView view) {
+
         mAddCarView = view;
         mContext = view.getContext();
+        if(mIsEdit) {
+            mAddCarView.setFields();
+        }
     }
 
     @Override
@@ -34,9 +46,27 @@ public class AddCarPresenter implements Presenter<AddCarView> {
         mContext = null;
     }
 
-    public void insertCar(Car car){
-        mContext.getContentResolver().insert(DataContract.CarTable.CONTENT_URI
-                , CarFactory.toContentValues(car));
+    public void setEdit(boolean edit){
+        mIsEdit = edit;
+    }
+
+    public void setCar(Car car){
+        mCar = car;
+    }
+
+    public Car getCar(){
+        return mCar;
+    }
+
+
+    public void insertCar(){
+        mAddCarView.buildCar();
+        if(mIsEdit){
+            mContext.getContentResolver().update(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(mCar), DataContract.CarTable._ID + " = " + mCar.getId(), null);
+        } else {
+            mContext.getContentResolver().insert(DataContract.CarTable.CONTENT_URI
+                    , CarFactory.toContentValues(mCar));
+        }
     }
 
     public boolean validateInput(LinearLayout container){

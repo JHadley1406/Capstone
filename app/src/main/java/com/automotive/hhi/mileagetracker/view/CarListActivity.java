@@ -1,33 +1,28 @@
 package com.automotive.hhi.mileagetracker.view;
 
-import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.automotive.hhi.mileagetracker.IntentContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.CarAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
-import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.presenter.CarListPresenter;
-import com.automotive.hhi.mileagetracker.view.viewholders.CarViewHolder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CarListActivity extends AppCompatActivity implements CarListView, AddCarFragment.OnCarFragmentInteractionListener {
+public class CarListActivity extends AppCompatActivity implements CarListView
+        , AddCarFragment.OnCarFragmentInteractionListener {
 
     private final String LOG_TAG = CarListActivity.class.getSimpleName();
 
@@ -60,6 +55,11 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        mCarListPresenter.restartLoader();
+    }
+    @Override
     protected void onDestroy(){
         mCarListPresenter.detachView();
         super.onDestroy();
@@ -75,7 +75,7 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
         } else if(cars.getCursor().getCount() == 1){
             Car car = CarFactory.fromCursor(cars.getCursor());
             Intent carDetailIntent = new Intent(getApplicationContext(), CarDetailActivity.class);
-            carDetailIntent.putExtra(IntentContract.CAR_ID, car.getId());
+            carDetailIntent.putExtra(KeyContract.CAR_ID, car.getId());
             launchCarDetail(carDetailIntent);
         }*/
 
@@ -110,14 +110,14 @@ public class CarListActivity extends AppCompatActivity implements CarListView, A
     }
 
     @Override
-    public void onCarFragmentInteraction() {
+    public void onCarFragmentInteraction(Car car) {
         mAddCarFragment.dismiss();
         mCarRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
     public void addCar(){
-        mAddCarFragment = new AddCarFragment();
+        mAddCarFragment = AddCarFragment.newInstance(new Car(), false);
         mAddCarFragment.show(getFragmentManager(), "add_car_fragment");
     }
 

@@ -16,10 +16,10 @@ public interface CarDetailView extends MvpView {
 
     void showFillups(FillupAdapter fillupAdapter);
 
-    void setMileageData(Fillup fillup);
-
     void showCar(Car car);
 
     void launchSelectStation(Intent selectStationIntent);
+
+    void launchEditCar(Car car);
     
 }

@@ -7,12 +7,10 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.automotive.hhi.mileagetracker.IntentContract;
+import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.adapters.CarAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
-import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.CarDetailActivity;
 import com.automotive.hhi.mileagetracker.view.CarListView;
@@ -53,7 +51,7 @@ public class CarListPresenter implements Presenter<CarListView>, ViewHolderOnCli
     @Override
     public void onClick(Car car) {
         Intent carDetailIntent = new Intent(mContext, CarDetailActivity.class);
-        carDetailIntent.putExtra(IntentContract.CAR, car);
+        carDetailIntent.putExtra(KeyContract.CAR, car);
         mCarListView.launchCarDetail(carDetailIntent);
     }
 
@@ -73,6 +71,10 @@ public class CarListPresenter implements Presenter<CarListView>, ViewHolderOnCli
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        restartLoader();
+    }
+
+    public void restartLoader(){
         mLoaderManager.restartLoader(LOADER_ID, null, this);
     }
 

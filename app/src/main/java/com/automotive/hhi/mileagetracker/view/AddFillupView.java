@@ -5,4 +5,7 @@ package com.automotive.hhi.mileagetracker.view;
  */
 public interface AddFillupView extends MvpView{
 
+    void setFields();
+
+    void buildFillup();
 }
