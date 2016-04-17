@@ -100,7 +100,6 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
     public void onButtonPressed() {
         mAddFillupPresenter.checkStation();
         mAddFillupPresenter.validateInput(mInputContainer);
-        mAddFillupPresenter.insertFillup(buildFillup());
         if (mListener != null) {
             mListener.onFillupFragmentInteraction();
         }

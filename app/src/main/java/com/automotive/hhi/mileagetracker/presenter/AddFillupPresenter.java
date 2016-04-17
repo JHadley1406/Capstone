@@ -88,12 +88,12 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
         }
     }
 
-    public void insertFillup(Fillup fillup){
-        fillup.setStationId(mStation.getId());
-        fillup.setCarId(mCar.getId());
-        calculateMpg(fillup);
+    public void insertFillup(){
+        mFillup.setStationId(mStation.getId());
+        mFillup.setCarId(mCar.getId());
+        calculateMpg();
         mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI
-                , FillupFactory.toContentValues(fillup));
+                , FillupFactory.toContentValues(mFillup));
     }
 
     public boolean validateInput(LinearLayout container){
@@ -108,10 +108,12 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
                 }
             }
         }
+        mAddFillupView.buildFillup();
+        insertFillup();
         return true;
     }
 
-    private void calculateMpg(Fillup fillup){
+    private void calculateMpg(){
         String sortOrder = "date DESC";
         // fillupCount is at least 1, since we're passing one into this method
         int fillupCount = 1;
@@ -123,8 +125,8 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
         if(allFillups != null && allFillups.moveToFirst()) {
             fillupCount += allFillups.getCount();
             Fillup prevFillup = FillupFactory.fromCursor(allFillups);
-            fillup.setFillupMpg((fillup.getFillupMileage() - prevFillup.getFillupMileage()) / fillup.getGallons());
-            mpgTotal = prevFillup.getFillupMpg() + fillup.getFillupMpg();
+            mFillup.setFillupMpg((mFillup.getFillupMileage() - prevFillup.getFillupMileage()) / mFillup.getGallons());
+            mpgTotal = prevFillup.getFillupMpg() + mFillup.getFillupMpg();
 
             while (allFillups.moveToNext()) {
                 mpgTotal += allFillups.getInt(allFillups.getColumnIndexOrThrow(DataContract.FillupTable.MPG));
@@ -133,8 +135,8 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
 
             allFillups.close();
         } else {
-            fillup.setFillupMpg(0.0);
-            mpgTotal = fillup.getFillupMpg();
+            mFillup.setFillupMpg(0.0);
+            mpgTotal = mFillup.getFillupMpg();
         }
         mCar.setAvgMpg(mpgTotal / fillupCount);
         mContext.getContentResolver().update(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(mCar), DataContract.CarTable._ID + " = " + mCar.getId(), null);

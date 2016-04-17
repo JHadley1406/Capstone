@@ -23,6 +23,7 @@ import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
+import com.automotive.hhi.mileagetracker.model.data.Fillup;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.presenter.SelectStationPresenter;
 
@@ -70,7 +71,7 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
 
     @Override
     public void addFillup(Car car, Station station) {
-        mAddFillupFragment = AddFillupFragment.newInstance(car, station);
+        mAddFillupFragment = AddFillupFragment.newInstance(car, station, new Fillup());
         mAddFillupFragment.show(getFragmentManager(), "add_fillup_fragment");
     }
 
