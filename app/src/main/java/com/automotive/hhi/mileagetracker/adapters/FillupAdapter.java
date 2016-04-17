@@ -20,9 +20,12 @@ public class FillupAdapter extends CursorRecyclerViewAdapter<FillupViewHolder> {
     private Context mContext;
     private ViewHolderOnClickListener<Fillup> mFillupOnClickListener;
 
-    public FillupAdapter(Context context, Cursor cursor){
+    public FillupAdapter(Context context
+            , Cursor cursor
+            , ViewHolderOnClickListener<Fillup> fillupOnClickListener){
         super(context, cursor);
         mContext = context;
+        mFillupOnClickListener = fillupOnClickListener;
     }
 
     @Override

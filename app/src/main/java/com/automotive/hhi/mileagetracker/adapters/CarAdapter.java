@@ -20,7 +20,9 @@ public class CarAdapter extends CursorRecyclerViewAdapter<CarViewHolder> {
     private Context mContext;
     private ViewHolderOnClickListener<Car> mCarOnClickListener;
 
-    public CarAdapter(Context context, Cursor cursor, ViewHolderOnClickListener<Car> carOnClickListener){
+    public CarAdapter(Context context
+            , Cursor cursor
+            , ViewHolderOnClickListener<Car> carOnClickListener){
         super(context, cursor);
         mContext = context;
         mCarOnClickListener = carOnClickListener;

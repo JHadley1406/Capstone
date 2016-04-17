@@ -39,7 +39,7 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
     public CarDetailPresenter(Context context, LoaderManager loaderManager, Car car){
         mContext = context;
         mLoaderManager = loaderManager;
-        mFillupAdapter = new FillupAdapter(mContext, null);
+        mFillupAdapter = new FillupAdapter(mContext, null, this);
         mCurrentCar = car;
     }
 
@@ -73,8 +73,15 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
 
     @Override
     public void onClick(Fillup fillup){
-        Station station = StationFactory.fromCursor(mContext.getContentResolver().query(DataContract.StationTable.CONTENT_URI, null, DataContract.StationTable._ID + " = " + fillup.getStationId(), null, null));
-        mCarDetailView.launchEditFillup(mCurrentCar, station, fillup);
+        Cursor stationCursor = mContext.getContentResolver().query(
+                DataContract.StationTable.CONTENT_URI
+                , null
+                , DataContract.StationTable._ID + " = " + fillup.getStationId()
+                , null, null);
+        if(stationCursor.moveToFirst()) {
+            Station station = StationFactory.fromCursor(stationCursor);
+            mCarDetailView.launchEditFillup(mCurrentCar, station, fillup);
+        }
     }
 
 
