@@ -80,11 +80,13 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
-        mAddCarPresenter = new AddCarPresenter();
+
 
         if (getArguments() != null) {
-            mAddCarPresenter.setCar((Car) getArguments().getParcelable(KeyContract.CAR));
-            mAddCarPresenter.setEdit(getArguments().getBoolean(KeyContract.IS_EDIT));
+            mAddCarPresenter = new AddCarPresenter((Car)getArguments()
+                    .getParcelable(KeyContract.CAR)
+                    , getArguments()
+                    .getBoolean(KeyContract.IS_EDIT));
         }
     }
 

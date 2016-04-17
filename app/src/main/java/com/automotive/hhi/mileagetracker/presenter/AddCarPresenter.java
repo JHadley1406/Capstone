@@ -27,7 +27,9 @@ public class AddCarPresenter implements Presenter<AddCarView> {
     private boolean mIsEdit;
     private Car mCar;
 
-    public AddCarPresenter(){
+    public AddCarPresenter(Car car, boolean edit){
+        mCar = car;
+        mIsEdit = edit;
     }
 
     @Override
@@ -44,14 +46,6 @@ public class AddCarPresenter implements Presenter<AddCarView> {
     public void detachView() {
         mAddCarView = null;
         mContext = null;
-    }
-
-    public void setEdit(boolean edit){
-        mIsEdit = edit;
-    }
-
-    public void setCar(Car car){
-        mCar = car;
     }
 
     public Car getCar(){
