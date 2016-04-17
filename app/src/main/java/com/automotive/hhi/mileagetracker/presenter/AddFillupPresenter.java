@@ -115,8 +115,7 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
 
     private void calculateMpg(){
         String sortOrder = "date DESC";
-        // fillupCount is at least 1, since we're passing one into this method
-        int fillupCount = 1;
+        int fillupCount = 0;
         double mpgTotal = 0;
         Cursor allFillups = mContext.getContentResolver().query(DataContract.FillupTable.CONTENT_URI, null, DataContract.FillupTable.CAR + " = " + mCar.getId(), null, sortOrder);
         // fillup MPG is calculated by subtracting the previous fillup's mileage
