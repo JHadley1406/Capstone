@@ -13,6 +13,8 @@ import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
+import com.automotive.hhi.mileagetracker.model.data.Station;
+import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.CarDetailView;
 import com.automotive.hhi.mileagetracker.view.SelectStationActivity;
@@ -71,7 +73,8 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
 
     @Override
     public void onClick(Fillup fillup){
-
+        Station station = StationFactory.fromCursor(mContext.getContentResolver().query(DataContract.StationTable.CONTENT_URI, null, DataContract.StationTable._ID + " = " + fillup.getStationId(), null, null));
+        mCarDetailView.launchEditFillup(mCurrentCar, station, fillup);
     }
 
 

@@ -17,6 +17,8 @@ import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
+import com.automotive.hhi.mileagetracker.model.data.Fillup;
+import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.presenter.CarDetailPresenter;
 
 import butterknife.Bind;
@@ -24,7 +26,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class CarDetailActivity extends AppCompatActivity implements CarDetailView
-        , AddCarFragment.OnCarFragmentInteractionListener {
+        , AddCarFragment.OnCarFragmentInteractionListener
+        , AddFillupFragment.OnFillupFragmentInteractionListener {
 
     private final String LOG_TAG = CarDetailActivity.class.getSimpleName();
 
@@ -50,6 +53,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     public Toolbar mToolbar;
     private CarDetailPresenter mCarDetailPresenter;
     private AddCarFragment mEditCarFragment;
+    private AddFillupFragment mEditFillupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,12 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     public void launchEditCar(Car car){
         mEditCarFragment = AddCarFragment.newInstance(car, true);
         mEditCarFragment.show(getFragmentManager(), "edit_car_fragment");
+    }
+
+    @Override
+    public void launchEditFillup(Car car, Station station, Fillup fillup){
+        mEditFillupFragment = AddFillupFragment.newInstance(car, station, fillup);
+        mEditFillupFragment.show(getFragmentManager(), "edit_fillup_fragment");
     }
 
     @Override
@@ -161,5 +171,11 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         mEditCarFragment.dismiss();
         mCarDetailPresenter.updateCar(car);
 
+    }
+
+    @Override
+    public void onFillupFragmentInteraction() {
+        mEditFillupFragment.dismiss();
+        mFillupRecyclerView.getAdapter().notifyDataSetChanged();
     }
 }
