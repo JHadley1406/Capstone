@@ -92,7 +92,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
 
     @Override
     public void launchEditFillup(Car car, Station station, Fillup fillup){
-        mEditFillupFragment = AddFillupFragment.newInstance(car, station, fillup);
+        mEditFillupFragment = AddFillupFragment.newInstance(car, station, fillup, true);
         mEditFillupFragment.show(getFragmentManager(), "edit_fillup_fragment");
     }
 

@@ -33,9 +33,15 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
     private Station mStation;
     private Car mCar;
     private Fillup mFillup;
+    private boolean mIsEdit;
 
-    public AddFillupPresenter(Fillup fillup, Car car, Station station, Context context){
+    public AddFillupPresenter(Fillup fillup
+            , Car car
+            , Station station
+            , boolean isEdit
+            , Context context){
         mContext = context;
+        mIsEdit = isEdit;
         mStation = station;
         mCar = car;
         mFillup = fillup;
@@ -45,6 +51,9 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
     @Override
     public void attachView(AddFillupView view) {
         mAddFillupView = view;
+        if(mIsEdit){
+            mAddFillupView.setFields();
+        }
     }
 
     @Override
@@ -89,11 +98,20 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
     }
 
     public void insertFillup(){
-        mFillup.setStationId(mStation.getId());
-        mFillup.setCarId(mCar.getId());
+
         calculateMpg();
-        mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI
-                , FillupFactory.toContentValues(mFillup));
+        if(mIsEdit){
+            mContext.getContentResolver().update(DataContract.FillupTable.CONTENT_URI
+                    , FillupFactory.toContentValues(mFillup)
+                    , DataContract.FillupTable._ID + " = " + mFillup.getId()
+                    , null);
+        } else {
+            mFillup.setStationId(mStation.getId());
+            mFillup.setCarId(mCar.getId());
+            mFillup.setDate(System.currentTimeMillis());
+            mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI
+                    , FillupFactory.toContentValues(mFillup));
+        }
     }
 
     public boolean validateInput(LinearLayout container){

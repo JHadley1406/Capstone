@@ -71,7 +71,7 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
 
     @Override
     public void addFillup(Car car, Station station) {
-        mAddFillupFragment = AddFillupFragment.newInstance(car, station, new Fillup());
+        mAddFillupFragment = AddFillupFragment.newInstance(car, station, new Fillup(), false);
         mAddFillupFragment.show(getFragmentManager(), "add_fillup_fragment");
     }
 

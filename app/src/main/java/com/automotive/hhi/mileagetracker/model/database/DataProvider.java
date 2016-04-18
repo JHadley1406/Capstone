@@ -283,7 +283,7 @@ public class DataProvider extends ContentProvider {
                         , selectionArgs);
                 break;
             case FILLUPS:
-                count = mDb.update(DataContract.STATION_TABLE, values, selection, selectionArgs);
+                count = mDb.update(DataContract.FILLUP_TABLE, values, selection, selectionArgs);
                 break;
             case FILLUP_ID:
                 count = mDb.update(DataContract.FILLUP_TABLE

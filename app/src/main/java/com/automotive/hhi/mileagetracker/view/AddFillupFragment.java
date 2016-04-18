@@ -57,12 +57,13 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
      * @param station station object at which the car is being filled up.
      * @return A new instance of fragment AddFillupFragment.
      */
-    public static AddFillupFragment newInstance(Car car, Station station, Fillup fillup) {
+    public static AddFillupFragment newInstance(Car car, Station station, Fillup fillup, boolean isEdit) {
         AddFillupFragment fragment = new AddFillupFragment();
         Bundle args = new Bundle();
         args.putParcelable(KeyContract.CAR, car);
         args.putParcelable(KeyContract.STATION, station);
         args.putParcelable(KeyContract.FILLUP, fillup);
+        args.putBoolean(KeyContract.IS_EDIT, isEdit);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,9 +78,10 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
         if (getArguments() != null) {
             mAddFillupPresenter =
                     new AddFillupPresenter((Fillup) getArguments().getParcelable(KeyContract.FILLUP)
-                    , (Car)getArguments().getParcelable(KeyContract.CAR)
-                    ,(Station) getArguments().getParcelable(KeyContract.STATION)
-                    , getContext());
+                            , (Car)getArguments().getParcelable(KeyContract.CAR)
+                            ,(Station) getArguments().getParcelable(KeyContract.STATION)
+                            , getArguments().getBoolean(KeyContract.IS_EDIT, false)
+                            , getContext());
         }
 
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
@@ -137,7 +139,6 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
         mAddFillupPresenter.getFillup().setFuelCost(Double.parseDouble(mFuelPrice.getText().toString()));
         mAddFillupPresenter.getFillup().setFillupMileage(Double.parseDouble(mMileage.getText().toString()));
         mAddFillupPresenter.getFillup().setOctane(Integer.valueOf(mOctane.getText().toString()));
-        mAddFillupPresenter.getFillup().setDate(System.currentTimeMillis());
     }
 
     /**

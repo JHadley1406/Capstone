@@ -86,7 +86,8 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
             mAddCarPresenter = new AddCarPresenter((Car)getArguments()
                     .getParcelable(KeyContract.CAR)
                     , getArguments()
-                    .getBoolean(KeyContract.IS_EDIT));
+                    .getBoolean(KeyContract.IS_EDIT)
+                    , getContext());
         }
     }
 

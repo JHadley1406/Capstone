@@ -27,16 +27,16 @@ public class AddCarPresenter implements Presenter<AddCarView> {
     private boolean mIsEdit;
     private Car mCar;
 
-    public AddCarPresenter(Car car, boolean edit){
+    public AddCarPresenter(Car car, boolean edit, Context context){
         mCar = car;
         mIsEdit = edit;
+        mContext = context;
     }
 
     @Override
     public void attachView(AddCarView view) {
 
         mAddCarView = view;
-        mContext = view.getContext();
         if(mIsEdit) {
             mAddCarView.setFields();
         }
@@ -56,7 +56,10 @@ public class AddCarPresenter implements Presenter<AddCarView> {
     public void insertCar(){
         mAddCarView.buildCar();
         if(mIsEdit){
-            mContext.getContentResolver().update(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(mCar), DataContract.CarTable._ID + " = " + mCar.getId(), null);
+            mContext.getContentResolver().update(DataContract.CarTable.CONTENT_URI
+                    , CarFactory.toContentValues(mCar)
+                    , DataContract.CarTable._ID + " = " + mCar.getId()
+                    , null);
         } else {
             mContext.getContentResolver().insert(DataContract.CarTable.CONTENT_URI
                     , CarFactory.toContentValues(mCar));
