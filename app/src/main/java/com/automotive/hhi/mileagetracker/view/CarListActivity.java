@@ -112,7 +112,7 @@ public class CarListActivity extends AppCompatActivity implements CarListView
     @Override
     public void onCarFragmentInteraction(Car car) {
         mAddCarFragment.dismiss();
-        //mCarRecyclerView.getAdapter().notifyDataSetChanged();
+        mCarListPresenter.onLoaderReset(null);
     }
 
     @Override

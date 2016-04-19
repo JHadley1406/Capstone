@@ -176,6 +176,6 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     @Override
     public void onFillupFragmentInteraction() {
         mEditFillupFragment.dismiss();
-        mFillupRecyclerView.getAdapter().notifyDataSetChanged();
+        mCarDetailPresenter.onLoaderReset(null);
     }
 }

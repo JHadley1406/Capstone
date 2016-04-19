@@ -89,6 +89,7 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
         mCarDetailView.launchEditCar(mCurrentCar);
     }
 
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = "date DESC";
