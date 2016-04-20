@@ -233,14 +233,13 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
             mLocationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    Log.i(LOG_TAG, "location changed");
                     if(location.getAccuracy() != 0){
                         getNearbyStations();
                     }
                 }
 
                 @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
+                public void onStatusChanged(String provider, int status, Bundle extras){
 
                 }
 

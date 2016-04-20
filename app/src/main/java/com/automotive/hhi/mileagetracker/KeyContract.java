@@ -13,4 +13,5 @@ public class KeyContract {
     public static final int DETAIL_TO_STATION_CODE = 789;
     public static final int RETURN_TO_DETAIL_CODE = 987;
     public static final int USED_STATION_LOADER_ID = 837294056;
+    public static final int SELECT_IMAGE = 3245;
 }

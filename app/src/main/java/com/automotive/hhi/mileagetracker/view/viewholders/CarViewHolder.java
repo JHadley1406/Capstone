@@ -1,12 +1,17 @@
 package com.automotive.hhi.mileagetracker.view.viewholders;
 
+import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
+import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -16,18 +21,21 @@ import butterknife.ButterKnife;
  */
 public class CarViewHolder extends RecyclerView.ViewHolder {
 
+    private final String LOG_TAG = CarViewHolder.class.getSimpleName();
+    @Bind(R.id.item_car_image)
+    public ImageView mImage;
     @Bind(R.id.item_car_name)
-    TextView mName;
+    public TextView mName;
     @Bind(R.id.item_car_make)
-    TextView mMake;
+    public TextView mMake;
     @Bind(R.id.item_car_model)
-    TextView mModel;
+    public TextView mModel;
     @Bind(R.id.item_car_year)
-    TextView mYear;
+    public TextView mYear;
     @Bind(R.id.item_car_mpg)
-    TextView mMpg;
+    public TextView mMpg;
 
-    Car mHolderCar;
+    public Car mHolderCar;
 
 
     public CarViewHolder(View itemView) {
@@ -35,8 +43,14 @@ public class CarViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setViewHolder(Car car, final ViewHolderOnClickListener<Car> selectedCarListener){
+    public void setViewHolder(Context context, Car car, final ViewHolderOnClickListener<Car> selectedCarListener){
         mHolderCar = car;
+        Log.i(LOG_TAG, "itemView width: " + mImage.getWidth());
+        if(mHolderCar.getImage() != null) {
+            Picasso.with(context)
+                    .load(Uri.parse(mHolderCar.getImage()))
+                    .into(mImage);
+        }
         mName.setText(car.getName());
         mMake.setText(car.getMake());
         mModel.setText(car.getModel());

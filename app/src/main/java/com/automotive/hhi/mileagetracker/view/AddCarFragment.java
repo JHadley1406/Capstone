@@ -3,16 +3,19 @@ package com.automotive.hhi.mileagetracker.view;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +24,7 @@ import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.presenter.AddCarPresenter;
+import com.squareup.picasso.Picasso;
 
 import javax.annotation.Resource;
 
@@ -38,6 +42,10 @@ import butterknife.OnClick;
  */
 public class AddCarFragment extends DialogFragment implements AddCarView {
 
+    private final String LOG_TAG = AddCarFragment.class.getSimpleName();
+
+    @Bind(R.id.add_car_image)
+    public ImageView mImage;
     @Bind(R.id.add_car_name)
     public EditText mName;
     @Bind(R.id.add_car_make)
@@ -79,7 +87,7 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
 
 
         if (getArguments() != null) {
@@ -94,11 +102,12 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_car, container, false);
         ButterKnife.bind(this, rootView);
         mAddCarPresenter.attachView(this);
-
+        if(mAddCarPresenter.getIsEdit()){
+            mAddCar.setText(getResources().getString(R.string.add_car_edit_button));
+        }
         return rootView;
     }
 
@@ -110,6 +119,11 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
                 mListener.onCarFragmentInteraction(mAddCarPresenter.getCar());
             }
         }
+    }
+
+    @OnClick(R.id.add_car_image)
+    public void onImageClick(){
+        mAddCarPresenter.selectImage();
     }
 
     @Override
@@ -132,6 +146,12 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
 
     @Override
     public void setFields(){
+        Log.i(LOG_TAG, "Image URI: " + mAddCarPresenter.getCar().getImage());
+        if(mAddCarPresenter.getCar().getImage() != null) {
+            Picasso.with(getContext())
+                    .load(Uri.parse(mAddCarPresenter.getCar().getImage()))
+                    .into(mImage);
+        }
         mName.setText(mAddCarPresenter.getCar().getName());
         mMake.setText(mAddCarPresenter.getCar().getMake());
         mModel.setText(mAddCarPresenter.getCar().getModel());
@@ -140,12 +160,32 @@ public class AddCarFragment extends DialogFragment implements AddCarView {
 
     @Override
     public void buildCar(){
+
         mAddCarPresenter.getCar().setName(mName.getText().toString());
         mAddCarPresenter.getCar().setMake(mMake.getText().toString());
         mAddCarPresenter.getCar().setModel(mModel.getText().toString());
         mAddCarPresenter.getCar().setYear(Integer.valueOf(mYear.getText().toString()));
         if(mAddCarPresenter.getCar().getId() == 0){
             mAddCarPresenter.getCar().setAvgMpg(0.0);
+        }
+    }
+
+    @Override
+    public void selectImage(Intent selectImageIntent){
+        Log.i(LOG_TAG, "selecting image");
+        startActivityForResult(Intent
+                .createChooser(selectImageIntent, "Select Image"), KeyContract.SELECT_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        Log.i(LOG_TAG, "returned from gallery");
+        if(requestCode == KeyContract.SELECT_IMAGE
+                && resultCode == Activity.RESULT_OK
+                && data != null
+                && data.getData() != null){
+            Log.i(LOG_TAG, "got image");
+            mAddCarPresenter.saveImage(data.getData());
         }
     }
 

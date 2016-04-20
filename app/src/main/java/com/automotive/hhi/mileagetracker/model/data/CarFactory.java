@@ -27,6 +27,9 @@ public class CarFactory  {
         car.setName(cursor
                 .getString(cursor
                         .getColumnIndexOrThrow(DataContract.CarTable.NAME)));
+        car.setImage(cursor
+                .getString(cursor
+                        .getColumnIndexOrThrow(DataContract.CarTable.IMAGE)));
         car.setYear(cursor
                 .getInt(cursor
                         .getColumnIndexOrThrow(DataContract.CarTable.YEAR)));
@@ -39,6 +42,7 @@ public class CarFactory  {
         vals.put(DataContract.CarTable.MAKE, car.getMake());
         vals.put(DataContract.CarTable.MODEL, car.getModel());
         vals.put(DataContract.CarTable.NAME, car.getName());
+        vals.put(DataContract.CarTable.IMAGE, car.getImage());
         vals.put(DataContract.CarTable.YEAR, car.getYear());
 
         return vals;

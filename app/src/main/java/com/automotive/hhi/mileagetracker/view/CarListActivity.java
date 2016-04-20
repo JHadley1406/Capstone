@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +45,7 @@ public class CarListActivity extends AppCompatActivity implements CarListView
         setSupportActionBar(mToolbar);
 
         preparePresenter();
-        mCarRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mCarRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override

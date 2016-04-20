@@ -5,12 +5,14 @@ import android.app.DialogFragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
@@ -19,6 +21,9 @@ import com.automotive.hhi.mileagetracker.model.data.Fillup;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.presenter.AddFillupPresenter;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,6 +39,8 @@ import butterknife.OnClick;
  */
 public class AddFillupFragment extends DialogFragment implements AddFillupView {
 
+    @Bind(R.id.add_fillup_date)
+    public TextView mDate;
     @Bind(R.id.add_fillup_fuel_amount)
     public EditText mFuelAmount;
     @Bind(R.id.add_fillup_price)
@@ -84,7 +91,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
                             , getContext());
         }
 
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_Dialog);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme);
     }
 
     @Override
@@ -95,6 +102,12 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
 
         ButterKnife.bind(this, rootView);
         mAddFillupPresenter.attachView(this);
+        if(mAddFillupPresenter.getIsEdit()){
+            mAddFillup.setText(getResources().getString(R.string.add_fillup_edit_button));
+        } else{
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            mDate.setText(sdf.format(new Date()));
+        }
         return rootView;
     }
 
@@ -106,6 +119,12 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
             mListener.onFillupFragmentInteraction();
         }
     }
+
+    @OnClick(R.id.add_fillup_date)
+    public void showDatePickerDialog(){
+        mAddFillupPresenter.buildDatePickerDialog().show();
+    }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -127,6 +146,7 @@ public class AddFillupFragment extends DialogFragment implements AddFillupView {
 
     @Override
     public void setFields(){
+        mDate.setText(mAddFillupPresenter.getFillup().getReadableDate());
         mFuelAmount.setText(String.format("%.2f", mAddFillupPresenter.getFillup().getGallons()));
         mFuelPrice.setText(String.format("%.2f", mAddFillupPresenter.getFillup().getFuelCost()));
         mOctane.setText(String.format("%d", mAddFillupPresenter.getFillup().getOctane()));

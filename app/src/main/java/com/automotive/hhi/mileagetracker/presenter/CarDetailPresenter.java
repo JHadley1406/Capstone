@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
@@ -62,6 +63,18 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
     public void updateCar(Car car){
         mCurrentCar = car;
         loadCar();
+    }
+
+    public void deleteCar(){
+        mContext.getContentResolver()
+                .delete(DataContract.CarTable.CONTENT_URI
+                        , DataContract.CarTable._ID + " = " + mCurrentCar.getId()
+                        , null);
+        mContext.getContentResolver()
+                .delete(DataContract.FillupTable.CONTENT_URI
+                        , DataContract.FillupTable.CAR + " = " + mCurrentCar.getId()
+                        , null);
+        mCarDetailView.close();
     }
 
     public void launchSelectStation() {

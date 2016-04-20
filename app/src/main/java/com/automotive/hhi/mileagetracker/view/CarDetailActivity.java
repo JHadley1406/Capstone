@@ -1,6 +1,8 @@
 package com.automotive.hhi.mileagetracker.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -77,6 +79,11 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     @OnClick(R.id.car_detail_edit_car)
     public void editCar(){
         mCarDetailPresenter.launchEditCar();
+    }
+
+    @OnClick(R.id.car_detail_delete_car)
+    public void deleteCar(){
+        launchCarDeleteAlert();
     }
 
     @Override
@@ -177,5 +184,37 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     public void onFillupFragmentInteraction() {
         mEditFillupFragment.dismiss();
         mCarDetailPresenter.onLoaderReset(null);
+    }
+
+    @Override
+    public void close(){
+        finish();
+    }
+
+    @Override
+    public void onDestroy(){
+        mCarDetailPresenter.detachView();
+        super.onDestroy();
+    }
+
+    private void launchCarDeleteAlert(){
+        AlertDialog.Builder deleteAlertDialog = new AlertDialog.Builder(this);
+        deleteAlertDialog.setMessage(R.string.car_detail_delete_car_dialog)
+                .setCancelable(true)
+                .setPositiveButton(R.string.car_detail_delete_dialog_delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mCarDetailPresenter.deleteCar();
+                    }
+                })
+                .setNegativeButton(R.string.car_detail_delete_dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .create()
+                .show();
+
     }
 }

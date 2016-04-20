@@ -20,12 +20,14 @@
     <string name="add_car_model_hint">Car Model</string>
     <string name="add_car_year_hint">Car Year</string>
     <string name="add_car_add_button">Add Car</string>
+    <string name="add_car_edit_button">Edit Car</string>
     <string name="add_car_mileage_hint">Current Mileage</string>
 
     <string name="add_fillup_fuel_amount_hint">Gallons of Fuel</string>
     <string name="add_fillup_price_hint">Price per Gallon</string>
     <string name="add_fillup_octane_hint">Octane Rating</string>
     <string name="add_fillup_add_button">Add Fillup</string>
+    <string name="add_fillup_edit_button">Edit Fillup</string>
 
     <string name="edit_text_error">Please Enter</string>
     <string name="car_detail_add_fillup_button">Add Fill-up</string>
@@ -43,5 +45,8 @@
     <string name="gps_alert_cancel">Cancel</string>
     <string name="car_detail_delete_car_button">Delete</string>
     <string name="car_detail_edit_car_button">Edit</string>
+    <string name="car_detail_delete_car_dialog">Deleting this car will remove all associated fillups\nAre you sure you wish to proceed?</string>
+    <string name="car_detail_delete_dialog_delete">Delete</string>
+    <string name="car_detail_delete_dialog_cancel">Cancel</string>
 
 </resources>

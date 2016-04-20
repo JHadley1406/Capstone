@@ -24,5 +24,7 @@ public interface CarDetailView extends MvpView {
     void launchEditCar(Car car);
 
     void launchEditFillup(Car car, Station station, Fillup fillup);
+
+    void close();
     
 }

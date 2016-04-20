@@ -2,7 +2,12 @@ package com.automotive.hhi.mileagetracker.presenter;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +19,13 @@ import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.AddCarView;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by Josiah Hadley on 4/1/2016.
@@ -52,6 +64,19 @@ public class AddCarPresenter implements Presenter<AddCarView> {
         return mCar;
     }
 
+    public boolean getIsEdit(){ return mIsEdit; }
+
+    public void selectImage(){
+        Intent selectImageIntent = new Intent();
+        selectImageIntent.setType("image/*");
+        selectImageIntent.setAction(Intent.ACTION_GET_CONTENT);
+        Log.i(LOG_TAG, "passing image intent");
+        mAddCarView.selectImage(selectImageIntent);
+    }
+
+    public void saveImage(Uri imageUri){
+        Picasso.with(mContext).load(imageUri).into(target);
+    }
 
     public void insertCar(){
         mAddCarView.buildCar();
@@ -81,4 +106,34 @@ public class AddCarPresenter implements Presenter<AddCarView> {
         return true;
     }
 
+
+    private Target target = new Target(){
+
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            String fileName = "carimage"+mCar.getId()+".jpg";
+            FileOutputStream fileStream;
+
+            mCar.setImage("file:"+mContext.getFilesDir()+"/"+fileName);
+            try{
+                fileStream = mContext.openFileOutput(fileName, Context.MODE_PRIVATE);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,fileStream);
+                fileStream.flush();
+                fileStream.close();
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "IOException: " + e.toString());
+            }
+            mAddCarView.setFields();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    };
 }

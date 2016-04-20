@@ -1,5 +1,6 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
+import android.app.DatePickerDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -21,10 +23,12 @@ import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.AddFillupView;
 
+import java.util.Calendar;
+
 /**
  * Created by Josiah Hadley on 4/1/2016.
  */
-public class AddFillupPresenter implements Presenter<AddFillupView> {
+public class AddFillupPresenter implements Presenter<AddFillupView>, DatePickerDialog.OnDateSetListener {
 
     private final String LOG_TAG = AddFillupPresenter.class.getSimpleName();
 
@@ -67,6 +71,8 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
     public Fillup getFillup() { return mFillup; }
 
     public Station getStation(){ return mStation; }
+
+    public boolean getIsEdit(){ return mIsEdit; }
 
     public void checkStation(){
         if(mStation.getId()==0){
@@ -157,5 +163,23 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
         }
         mCar.setAvgMpg(mpgTotal / fillupCount);
         mContext.getContentResolver().update(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(mCar), DataContract.CarTable._ID + " = " + mCar.getId(), null);
+    }
+
+    public DatePickerDialog buildDatePickerDialog(){
+        Calendar cal = Calendar.getInstance();
+        if(mIsEdit) {
+            cal.setTimeInMillis(mFillup.getDate());
+        }
+        return new DatePickerDialog(mContext, this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, monthOfYear);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        mFillup.setDate(cal.getTimeInMillis());
+        mAddFillupView.setFields();
     }
 }

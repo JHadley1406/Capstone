@@ -2,6 +2,7 @@ package com.automotive.hhi.mileagetracker.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.CarViewHolder;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Josiah Hadley on 3/24/2016.
@@ -29,16 +31,18 @@ public class CarAdapter extends CursorRecyclerViewAdapter<CarViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(CarViewHolder viewHolder, Cursor cursor) {
-        viewHolder.setViewHolder(CarFactory.fromCursor(cursor), mCarOnClickListener);
-
-    }
-
-    @Override
     public CarViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View itemView = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.car_item, parent, false);
+
         return new CarViewHolder(itemView);
     }
+
+    @Override
+    public void onBindViewHolder(CarViewHolder viewHolder, Cursor cursor) {
+        viewHolder.setViewHolder(mContext, CarFactory.fromCursor(cursor), mCarOnClickListener);
+    }
+
 }

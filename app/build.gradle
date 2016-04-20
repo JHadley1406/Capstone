@@ -30,6 +30,7 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.4.0'
 
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.diogobernardino:williamchart:2.2'
 
     compile 'com.google.dagger:dagger:2.0.1'

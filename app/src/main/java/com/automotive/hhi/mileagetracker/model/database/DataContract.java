@@ -25,6 +25,7 @@ public class DataContract {
         public static final String NAME = "name";
         public static final String MAKE = "make";
         public static final String MODEL = "model";
+        public static final String IMAGE = "image";
         public static final String YEAR = "year";
         public static final String AVGMPG = "avgmpg";
 
@@ -33,6 +34,7 @@ public class DataContract {
                 + NAME + " TEXT NOT NULL, "
                 + MAKE + " TEXT NULL, "
                 + MODEL + " TEXT NULL, "
+                + IMAGE + " TEXT NULL, "
                 + YEAR + " INTEGER NULL, "
                 + AVGMPG + " REAL NULL);";
 
@@ -66,7 +68,7 @@ public class DataContract {
                 + CAR + " INTEGER NOT NULL, "
                 + MILEAGE + " REAL NOT NULL, "
                 + MPG + " REAL NOT NULL, "
-                + STATION + " INTEGER NOT NULL, "
+                + STATION + " INTEGER NULL, "
                 + GALLONS + " REAL NOT NULL, "
                 + OCTANE + " INTEGER NOT NULL, "
                 + COST + " REAL NOT NULL, "
