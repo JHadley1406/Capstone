@@ -259,5 +259,4 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         }
     }
 
-
 }

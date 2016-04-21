@@ -17,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
@@ -29,12 +31,17 @@ import com.automotive.hhi.mileagetracker.presenter.SelectStationPresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SelectStationActivity extends AppCompatActivity implements SelectStationView
         , AddFillupFragment.OnFillupFragmentInteractionListener {
 
     private final int PERMISSION_REQUEST_CODE = 100;
 
+    @Bind(R.id.select_station_address_input)
+    public EditText mAddressSearch;
+    @Bind(R.id.select_station_address_find_button)
+    public Button mAddressSearchButton;
     @Bind(R.id.select_station_nearby_rv)
     public RecyclerView mNearbyStationRV;
     @Bind(R.id.select_station_used_rv)
@@ -56,6 +63,11 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
         mNearbyStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
         preparePresenter();
         checkPermission();
+    }
+
+    @OnClick(R.id.select_station_address_find_button)
+    public void addressSearch(){
+        mSelectStationPresenter.addressSearch(mAddressSearch.getText().toString());
     }
 
     @Override

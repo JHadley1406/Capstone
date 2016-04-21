@@ -48,5 +48,7 @@
     <string name="car_detail_delete_car_dialog">Deleting this car will remove all associated fillups\nAre you sure you wish to proceed?</string>
     <string name="car_detail_delete_dialog_delete">Delete</string>
     <string name="car_detail_delete_dialog_cancel">Cancel</string>
+    <string name="select_station_address_input_hint">Station Address</string>
+    <string name="select_station_address_find_text">Search</string>
 
 </resources>
