@@ -1,12 +1,8 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
@@ -15,21 +11,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
+import com.automotive.hhi.mileagetracker.model.callbacks.LatLonCallback;
+import com.automotive.hhi.mileagetracker.model.callbacks.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
-import com.automotive.hhi.mileagetracker.view.AddFillupFragment;
 import com.automotive.hhi.mileagetracker.view.CarDetailActivity;
 import com.automotive.hhi.mileagetracker.view.SelectStationView;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,15 +30,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceFilter;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Manifest;
 
 
 /**
@@ -55,7 +49,8 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         , GoogleApiClient.ConnectionCallbacks
         , GoogleApiClient.OnConnectionFailedListener
         , ViewHolderOnClickListener<Station>
-        , LoaderManager.LoaderCallbacks<Cursor>{
+        , LoaderManager.LoaderCallbacks<Cursor>
+        , LatLonCallback{
 
     private final String LOG_TAG = SelectStationPresenter.class.getSimpleName();
 
@@ -259,4 +254,26 @@ public class SelectStationPresenter implements Presenter<SelectStationView>
         }
     }
 
+    public void addressSearch(String address){
+        final List<String> placeIds = new ArrayList<>();
+        PendingResult<AutocompletePredictionBuffer> result =
+                Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, address, null, null);
+        result.setResultCallback(new ResultCallback<AutocompletePredictionBuffer>() {
+            @Override
+            public void onResult(AutocompletePredictionBuffer autocompletePredictions) {
+                for(AutocompletePrediction prediction : autocompletePredictions){
+                    if(prediction.getPlaceTypes().contains(Place.TYPE_GAS_STATION)){
+                        placeIds.add(prediction.getPlaceId());
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    @Override
+    public void getLatLon(LatLng latLng) {
+        Location location = new Location(null)
+    }
 }

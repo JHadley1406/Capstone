@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
 import com.automotive.hhi.mileagetracker.model.data.FillupFactory;
-import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
+import com.automotive.hhi.mileagetracker.model.callbacks.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.FillupViewHolder;
 
 /**

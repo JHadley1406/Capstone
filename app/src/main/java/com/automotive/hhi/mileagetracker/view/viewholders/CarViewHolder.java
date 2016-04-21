@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
-import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
+import com.automotive.hhi.mileagetracker.model.callbacks.ViewHolderOnClickListener;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;

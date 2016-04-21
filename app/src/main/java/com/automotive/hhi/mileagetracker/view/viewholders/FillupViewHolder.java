@@ -6,9 +6,7 @@ import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
-import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
-
-import org.w3c.dom.Text;
+import com.automotive.hhi.mileagetracker.model.callbacks.ViewHolderOnClickListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

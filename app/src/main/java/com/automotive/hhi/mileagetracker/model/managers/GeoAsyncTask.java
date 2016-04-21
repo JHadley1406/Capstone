@@ -6,6 +6,7 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.automotive.hhi.mileagetracker.model.callbacks.LatLonCallback;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -18,8 +19,9 @@ public class GeoAsyncTask extends AsyncTask<String, Void, LatLng> {
 
     private final String LOG_TAG = GeoAsyncTask.class.getSimpleName();
     private Context mContext;
+    private LatLonCallback mCallback;
 
-    public GeoAsyncTask(Context context, ){
+    public GeoAsyncTask(Context context, LatLonCallback mCallback){
         mContext = context;
     }
 
@@ -38,7 +40,7 @@ public class GeoAsyncTask extends AsyncTask<String, Void, LatLng> {
 
     @Override
     public void onPostExecute(LatLng location){
-
+        mCallback.getLatLon(location);
     }
 
 }

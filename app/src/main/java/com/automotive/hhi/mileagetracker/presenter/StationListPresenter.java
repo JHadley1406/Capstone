@@ -1,11 +1,11 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
+import com.automotive.hhi.mileagetracker.model.callbacks.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.StationListView;

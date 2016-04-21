@@ -7,11 +7,11 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
+import com.automotive.hhi.mileagetracker.model.callbacks.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
 import com.automotive.hhi.mileagetracker.model.data.Station;
