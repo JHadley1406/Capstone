@@ -1,4 +1,4 @@
-package com.automotive.hhi.mileagetracker.presenter;
+package com.automotive.hhi.mileagetracker.model.callbacks;
 
 /**
  * Created by Josiah Hadley on 4/8/2016.

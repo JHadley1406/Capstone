@@ -2,7 +2,6 @@ package com.automotive.hhi.mileagetracker.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,8 @@ import android.view.ViewGroup;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
-import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
+import com.automotive.hhi.mileagetracker.model.callbacks.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.CarViewHolder;
-import com.squareup.picasso.Picasso;
 
 /**
  * Created by Josiah Hadley on 3/24/2016.

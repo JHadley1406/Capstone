@@ -111,6 +111,7 @@ public class AddCarPresenter implements Presenter<AddCarView> {
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            //TODO Car ID isn't set when adding a new car.  Need to fix the file name naming convention
             String fileName = "carimage"+mCar.getId()+".jpg";
             FileOutputStream fileStream;
 

@@ -1,14 +1,13 @@
 package com.automotive.hhi.mileagetracker.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Station;
-import com.automotive.hhi.mileagetracker.presenter.ViewHolderOnClickListener;
+import com.automotive.hhi.mileagetracker.model.callbacks.ViewHolderOnClickListener;
 import com.automotive.hhi.mileagetracker.view.viewholders.StationViewHolder;
 
 import java.util.List;
