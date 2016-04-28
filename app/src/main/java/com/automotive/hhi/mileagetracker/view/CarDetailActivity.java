@@ -9,30 +9,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
-import com.automotive.hhi.mileagetracker.model.data.Fillup;
-import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.presenter.CarDetailPresenter;
+import com.automotive.hhi.mileagetracker.view.interfaces.CarDetailView;
+import com.db.chart.view.LineChartView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CarDetailActivity extends AppCompatActivity implements CarDetailView
-        , AddCarFragment.OnCarFragmentInteractionListener
-        , AddFillupFragment.OnFillupFragmentInteractionListener {
+public class CarDetailActivity extends AppCompatActivity implements CarDetailView {
 
     private final String LOG_TAG = CarDetailActivity.class.getSimpleName();
 
+    @Bind(R.id.car_detail_ad_view)
+    public AdView mAdView;
+    @Bind(R.id.car_detail_chart)
+    public LineChartView mFuelChart;
     @Bind(R.id.car_detail_name)
     public TextView mCarName;
     @Bind(R.id.car_detail_make)
@@ -43,6 +48,8 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     public TextView mCarYear;
     @Bind(R.id.car_detail_avg_mpg)
     public TextView mAverageMpg;
+    @Bind(R.id.car_detail_image)
+    public ImageView mCarImage;
     @Bind(R.id.car_detail_fillups_rv)
     public RecyclerView mFillupRecyclerView;
     @Bind(R.id.car_detail_delete_car)
@@ -54,8 +61,6 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     @Bind(R.id.car_detail_toolbar)
     public Toolbar mToolbar;
     private CarDetailPresenter mCarDetailPresenter;
-    private AddCarFragment mEditCarFragment;
-    private AddFillupFragment mEditFillupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,8 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         mFillupRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         preparePresenter();
@@ -72,7 +79,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
 
     @OnClick(R.id.car_detail_add_fillup)
     public void onClick(){
-        mCarDetailPresenter.launchSelectStation();
+        mCarDetailPresenter.launchAddFillup();
 
     }
 
@@ -87,29 +94,35 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
     }
 
     @Override
-    public void launchSelectStation(Intent selectStationIntent) {
-        startActivityForResult(selectStationIntent, KeyContract.DETAIL_TO_STATION_CODE);
-    }
-
-    @Override
-    public void launchEditCar(Car car){
-        mEditCarFragment = AddCarFragment.newInstance(car, true);
-        mEditCarFragment.show(getFragmentManager(), "edit_car_fragment");
-    }
-
-    @Override
-    public void launchEditFillup(Car car, Station station, Fillup fillup){
-        mEditFillupFragment = AddFillupFragment.newInstance(car, station, fillup, true);
-        mEditFillupFragment.show(getFragmentManager(), "edit_fillup_fragment");
+    public void launchActivity(Intent intent, int code){
+        startActivityForResult(intent, code);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode == KeyContract.DETAIL_TO_STATION_CODE){
-            if(resultCode == RESULT_OK){
-
+        switch (requestCode){
+            case KeyContract.EDIT_CAR_CODE:{
+                if(resultCode == RESULT_OK){
+                    mCarDetailPresenter.updateCar((Car)data.getParcelableExtra(KeyContract.CAR));
+                }
+                break;
             }
+            case KeyContract.CREATE_FILLUP_CODE:{
+                if(resultCode == RESULT_OK){
+                    mCarDetailPresenter.onLoaderReset(null);
+                    mCarDetailPresenter.initChart(mFuelChart);
+                }
+                break;
+            }
+            case KeyContract.EDIT_FILLUP_CODE:{
+                if(resultCode == RESULT_OK){
+                    mCarDetailPresenter.onLoaderReset(null);
+                    mCarDetailPresenter.notifyChartDataChanged();
+                }
+            }
+
         }
+
     }
 
 
@@ -142,7 +155,6 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
 
     @Override
     public void showFillups(FillupAdapter fillups) {
-        Log.i(LOG_TAG, "Showing fillups");
         mFillupRecyclerView.setAdapter(fillups);
         fillups.notifyDataSetChanged();
     }
@@ -154,6 +166,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         mCarMake.setText(car.getMake());
         mCarModel.setText(car.getModel());
         mCarYear.setText(String.format("%d", car.getYear()));
+        Picasso.with(getContext()).load(car.getImage()).fit().into(mCarImage);
     }
 
 
@@ -170,20 +183,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
                 , (Car)getIntent().getParcelableExtra(KeyContract.CAR));
         mCarDetailPresenter.attachView(this);
         mCarDetailPresenter.loadCar();
-
-    }
-
-    @Override
-    public void onCarFragmentInteraction(Car car) {
-        mEditCarFragment.dismiss();
-        mCarDetailPresenter.updateCar(car);
-
-    }
-
-    @Override
-    public void onFillupFragmentInteraction() {
-        mEditFillupFragment.dismiss();
-        mCarDetailPresenter.onLoaderReset(null);
+        mCarDetailPresenter.initChart(mFuelChart);
     }
 
     @Override

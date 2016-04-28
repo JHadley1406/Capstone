@@ -37,8 +37,9 @@
     <string name="fillup_item_gallons_label">Gallons:</string>
     <string name="fillup_item_price_label">Price: $</string>
     <string name="fillup_item_octane_label">Octane:</string>
-    <string name="fillup_item_mpg_label">MPG At Fillup:</string>
+    <string name="fillup_item_mpg_label">MPG</string>
     <string name="fillup_item_total_cost_label">Total: $</string>
+
     <string name="item_car_mpg_label">Current MPG:</string>
     <string name="gps_alert_message">GPS is disabled.  Please enable to view nearby Gas Stations</string>
     <string name="gps_alert_settings">Settings</string>
@@ -50,5 +51,21 @@
     <string name="car_detail_delete_dialog_cancel">Cancel</string>
     <string name="select_station_address_input_hint">Station Address</string>
     <string name="select_station_address_find_text">Search</string>
+    <string name="title_activity_add_car">Add Car</string>
+    <string name="add_fillup_no_station_text">No station selected</string>
+    <string name="add_fillup_no_station_click_here">click here to add</string>
+    <string name="title_activity_add_fillup">Add Fillup</string>
+    <string name="select_station_search_station_text">Station Search Results</string>
+    <string name="tool_tip_layout_mpg">mpg</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="item_car_image_content_desc">Your Car</string>
+    <string name="add_car_image_content_desc">Add an image of your car</string>
+    <string name="add_fillup_add_station_icon_content_desc">Add Station Icon</string>
+    <string name="add_fillup_change_date_icon_content_desc">Change Date Icon</string>
+    <string name="item_fillup_edit_content_desc">Edit Fillup</string>
+    <string name="tool_tip_mpg_icon_content_desc">Mile Per Gallon Tool Tip Icon</string>
+    <string name="activity_car_detail_chart_content_desc">Miles Per Gallon Over Time</string>
+
 
 </resources>

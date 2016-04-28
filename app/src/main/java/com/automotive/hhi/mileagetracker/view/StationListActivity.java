@@ -1,7 +1,6 @@
 package com.automotive.hhi.mileagetracker.view;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,16 +15,14 @@ import android.view.View;
 
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
-import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.presenter.StationListPresenter;
+import com.automotive.hhi.mileagetracker.view.interfaces.StationListView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class StationListActivity extends AppCompatActivity implements StationListView {
 
-    @Bind(R.id.station_list_fab)
-    public FloatingActionButton mFab;
     @Bind(R.id.station_list_rv)
     public RecyclerView mStationRecyclerView;
     @Bind(R.id.station_list_toolbar)
@@ -45,14 +42,6 @@ public class StationListActivity extends AppCompatActivity implements StationLis
 
         preparePresenter();
 
-
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override

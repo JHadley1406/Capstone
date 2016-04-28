@@ -1,13 +1,12 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Environment;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,12 +17,10 @@ import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
-import com.automotive.hhi.mileagetracker.view.AddCarView;
+import com.automotive.hhi.mileagetracker.view.interfaces.AddCarView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -94,15 +91,18 @@ public class AddCarPresenter implements Presenter<AddCarView> {
     public boolean validateInput(LinearLayout container){
         for(int i=0; i < container.getChildCount(); i++){
             View v = container.getChildAt(i);
-            if(v instanceof EditText){
-                if(TextUtils.isEmpty(((EditText) v).getText().toString())){
-                    ((EditText) v).setHintTextColor(Color.RED);
-                    ((EditText) v).setError(mContext.getResources()
-                            .getString(R.string.edit_text_error));
-                    return false;
+            if(v instanceof TextInputLayout){
+                View et = ((TextInputLayout) v).getChildAt(0);
+                if(TextUtils.isEmpty(((EditText) et).getText().toString())
+                    || ((EditText)et).getText().toString() == ""){
+                        ((EditText) et).setHintTextColor(Color.RED);
+                        ((EditText) et).setError(mContext.getResources()
+                                .getString(R.string.edit_text_error));
+                        return false;
                 }
             }
         }
+        insertCar();
         return true;
     }
 

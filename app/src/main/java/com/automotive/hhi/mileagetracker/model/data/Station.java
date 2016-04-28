@@ -3,25 +3,40 @@ package com.automotive.hhi.mileagetracker.model.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Josiah Hadley on 3/24/2016.
  */
 public class Station implements Parcelable{
 
     private long id;
+    @SerializedName("station")
     private String name;
     private String address;
+    private String distance;
     private double lat;
+    @SerializedName("lng")
     private double lon;
 
     public Station(){}
 
     public Station(Parcel in){
-        setId(in.readInt());
+        setId(in.readLong());
         setName(in.readString());
         setAddress(in.readString());
+        setDistance(in.readString());
         setLat(in.readDouble());
         setLon(in.readDouble());
+    }
+
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
     public long getId() {
@@ -74,6 +89,7 @@ public class Station implements Parcelable{
         dest.writeLong(getId());
         dest.writeString(getName());
         dest.writeString(getAddress());
+        dest.writeString(getDistance());
         dest.writeDouble(getLat());
         dest.writeDouble(getLon());
     }

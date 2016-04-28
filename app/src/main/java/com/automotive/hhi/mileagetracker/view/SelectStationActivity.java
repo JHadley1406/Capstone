@@ -11,30 +11,31 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
-import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.adapters.LocBasedStationAdapter;
 import com.automotive.hhi.mileagetracker.adapters.StationAdapter;
-import com.automotive.hhi.mileagetracker.model.data.Car;
-import com.automotive.hhi.mileagetracker.model.data.Fillup;
-import com.automotive.hhi.mileagetracker.model.data.Station;
+import com.automotive.hhi.mileagetracker.model.managers.LocationService;
 import com.automotive.hhi.mileagetracker.presenter.SelectStationPresenter;
+import com.automotive.hhi.mileagetracker.view.interfaces.SelectStationView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SelectStationActivity extends AppCompatActivity implements SelectStationView
-        , AddFillupFragment.OnFillupFragmentInteractionListener {
+public class SelectStationActivity extends AppCompatActivity implements SelectStationView {
+
+    private final String LOG_TAG = SelectStationActivity.class.getSimpleName();
 
     private final int PERMISSION_REQUEST_CODE = 100;
 
@@ -42,6 +43,8 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     public EditText mAddressSearch;
     @Bind(R.id.select_station_address_find_button)
     public Button mAddressSearchButton;
+    @Bind(R.id.select_station_nearby_label)
+    public TextView mNearbyLabel;
     @Bind(R.id.select_station_nearby_rv)
     public RecyclerView mNearbyStationRV;
     @Bind(R.id.select_station_used_rv)
@@ -49,7 +52,6 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     @Bind(R.id.select_station_toolbar)
     public Toolbar mToolbar;
     private SelectStationPresenter mSelectStationPresenter;
-    private AddFillupFragment mAddFillupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +61,18 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mUsedStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
-        mNearbyStationRV.setLayoutManager(new LinearLayoutManager(getContext()));
+        mUsedStationRV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mNearbyStationRV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         preparePresenter();
         checkPermission();
     }
 
     @OnClick(R.id.select_station_address_find_button)
     public void addressSearch(){
-        mSelectStationPresenter.addressSearch(mAddressSearch.getText().toString());
+        getContext()
+                .startService(mSelectStationPresenter
+                        .findStationsFromAddress(mAddressSearch.getText().toString()));
+        mNearbyLabel.setText(R.string.select_station_search_station_text);
     }
 
     @Override
@@ -79,12 +84,6 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
     public void showUsed(StationAdapter stations) {
         mUsedStationRV.setAdapter(stations);
         stations.notifyDataSetChanged();
-    }
-
-    @Override
-    public void addFillup(Car car, Station station) {
-        mAddFillupFragment = AddFillupFragment.newInstance(car, station, new Fillup(), false);
-        mAddFillupFragment.show(getFragmentManager(), "add_fillup_fragment");
     }
 
     @Override
@@ -123,28 +122,27 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
                     , new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}
                     , PERMISSION_REQUEST_CODE);
         } else{
-            mSelectStationPresenter.updateLocation();
+            Log.i(LOG_TAG, "Launching location service from checkPermission");
+            launchService(new Intent(getContext(), LocationService.class));
         }
     }
 
     private void preparePresenter(){
         mSelectStationPresenter = new SelectStationPresenter(getApplicationContext(), getLoaderManager());
         mSelectStationPresenter.attachView(this);
-        mSelectStationPresenter.setCar((Car) getIntent().getParcelableExtra(KeyContract.CAR));
-
     }
 
     @Override
-    public void onFillupFragmentInteraction() {
-        mAddFillupFragment.dismiss();
-        setResult(RESULT_OK);
+    public void returnStation(Intent returnStationIntent){
+        setResult(RESULT_OK, returnStationIntent);
         finish();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            mSelectStationPresenter.updateLocation();
+            Log.i(LOG_TAG, "Launching location service from checkPermission");
+            launchService(new Intent(getContext(), LocationService.class));
 
         }
     }
@@ -168,5 +166,11 @@ public class SelectStationActivity extends AppCompatActivity implements SelectSt
                 })
                 .create()
                 .show();
+    }
+
+
+    @Override
+    public void launchService(Intent intent){
+        getContext().startService(intent);
     }
 }

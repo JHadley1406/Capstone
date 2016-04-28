@@ -7,18 +7,23 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.adapters.FillupAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.Fillup;
+import com.automotive.hhi.mileagetracker.model.data.FillupFactory;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
-import com.automotive.hhi.mileagetracker.view.CarDetailView;
-import com.automotive.hhi.mileagetracker.view.SelectStationActivity;
+import com.automotive.hhi.mileagetracker.view.AddCarActivity;
+import com.automotive.hhi.mileagetracker.view.AddFillupActivity;
+import com.automotive.hhi.mileagetracker.view.interfaces.CarDetailView;
+import com.automotive.hhi.mileagetracker.view.williamchart.FuelChart;
+import com.db.chart.view.LineChartView;
+
+import java.util.ArrayList;
 
 /**
  * Created by Josiah Hadley on 3/24/2016.
@@ -34,6 +39,7 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
     private Context mContext;
     private FillupAdapter mFillupAdapter;
     private LoaderManager mLoaderManager;
+    private FuelChart mFuelChart;
 
     public Car mCurrentCar;
 
@@ -77,29 +83,61 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
         mCarDetailView.close();
     }
 
-    public void launchSelectStation() {
-        Intent selectStationIntent = new Intent(mContext, SelectStationActivity.class);
-        selectStationIntent.putExtra(KeyContract.CAR, mCurrentCar);
-        mCarDetailView.launchSelectStation(selectStationIntent);
+    public void launchAddFillup(){
+        Intent addFillupIntent = new Intent(mCarDetailView.getContext(), AddFillupActivity.class);
+        addFillupIntent.putExtra(KeyContract.CAR, mCurrentCar);
+        addFillupIntent.putExtra(KeyContract.FILLUP, new Fillup());
+        addFillupIntent.putExtra(KeyContract.STATION, new Station());
+        addFillupIntent.putExtra(KeyContract.IS_EDIT, false);
+        mCarDetailView.launchActivity(addFillupIntent, KeyContract.CREATE_FILLUP_CODE);
     }
-
 
     @Override
     public void onClick(Fillup fillup){
+        Intent editFillupIntent = new Intent(mCarDetailView.getContext(), AddFillupActivity.class);
+        editFillupIntent.putExtra(KeyContract.CAR, mCurrentCar);
+        editFillupIntent.putExtra(KeyContract.FILLUP, fillup);
+        editFillupIntent.putExtra(KeyContract.IS_EDIT, true);
         Cursor stationCursor = mContext.getContentResolver().query(
                 DataContract.StationTable.CONTENT_URI
                 , null
                 , DataContract.StationTable._ID + " = " + fillup.getStationId()
                 , null, null);
         if(stationCursor.moveToFirst()) {
-            Station station = StationFactory.fromCursor(stationCursor);
-            mCarDetailView.launchEditFillup(mCurrentCar, station, fillup);
+            editFillupIntent.putExtra(KeyContract.STATION, StationFactory.fromCursor(stationCursor));
+        } else{
+            editFillupIntent.putExtra(KeyContract.STATION, new Station());
         }
+        mCarDetailView.launchActivity(editFillupIntent, KeyContract.EDIT_FILLUP_CODE);
     }
 
+    private ArrayList<Fillup> getFillups(){
+        ArrayList<Fillup> fillupList = new ArrayList<>();
+        Cursor fillupCursor = mContext.getContentResolver().query(DataContract.FillupTable.CONTENT_URI, null, DataContract.FillupTable.CAR + " = " + mCurrentCar.getId(), null, "date ASC");
+        if(fillupCursor.moveToFirst()){
+            while(fillupCursor.moveToNext()){
+                fillupList.add(FillupFactory.fromCursor(fillupCursor));
+            }
+            fillupCursor.close();
+        }
+        return fillupList;
+    }
+
+    public void initChart(LineChartView fuelChartView){
+        mFuelChart = new FuelChart(fuelChartView, mContext, getFillups());
+        mFuelChart.show((int) Math.round(mCurrentCar.getAvgMpg()));
+    }
+
+    public void notifyChartDataChanged(){
+        mFuelChart.update(getFillups());
+    }
 
     public void launchEditCar(){
-        mCarDetailView.launchEditCar(mCurrentCar);
+
+        Intent editCarIntent = new Intent(mCarDetailView.getContext(), AddCarActivity.class);
+        editCarIntent.putExtra(KeyContract.CAR, mCurrentCar);
+        editCarIntent.putExtra(KeyContract.IS_EDIT, true);
+        mCarDetailView.launchActivity(editCarIntent, KeyContract.EDIT_CAR_CODE);
     }
 
 

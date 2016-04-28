@@ -13,7 +13,7 @@ import com.automotive.hhi.mileagetracker.adapters.CarAdapter;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.CarDetailActivity;
-import com.automotive.hhi.mileagetracker.view.CarListView;
+import com.automotive.hhi.mileagetracker.view.interfaces.CarListView;
 
 /**
  * Created by Josiah Hadley on 3/24/2016.

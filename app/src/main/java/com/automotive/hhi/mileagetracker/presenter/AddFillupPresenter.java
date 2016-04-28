@@ -1,18 +1,18 @@
 package com.automotive.hhi.mileagetracker.presenter;
 
-import android.app.DatePickerDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
+import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
 import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.data.CarFactory;
@@ -21,14 +21,16 @@ import com.automotive.hhi.mileagetracker.model.data.FillupFactory;
 import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
-import com.automotive.hhi.mileagetracker.view.AddFillupView;
+import com.automotive.hhi.mileagetracker.view.interfaces.AddFillupView;
+import com.automotive.hhi.mileagetracker.view.DatePickerFragment;
+import com.automotive.hhi.mileagetracker.view.SelectStationActivity;
 
 import java.util.Calendar;
 
 /**
  * Created by Josiah Hadley on 4/1/2016.
  */
-public class AddFillupPresenter implements Presenter<AddFillupView>, DatePickerDialog.OnDateSetListener {
+public class AddFillupPresenter implements Presenter<AddFillupView> {
 
     private final String LOG_TAG = AddFillupPresenter.class.getSimpleName();
 
@@ -72,10 +74,20 @@ public class AddFillupPresenter implements Presenter<AddFillupView>, DatePickerD
 
     public Station getStation(){ return mStation; }
 
+    public void setStation(Station station){
+        mStation = station;
+    }
+
     public boolean getIsEdit(){ return mIsEdit; }
 
+    public void launchAddStation(){
+        Intent addStationIntent = new Intent(mAddFillupView.getContext(), SelectStationActivity.class);
+
+        mAddFillupView.launchActivity(addStationIntent, KeyContract.GET_STATION_CODE);
+    }
+
     public void checkStation(){
-        if(mStation.getId()==0){
+        if(mStation.getId()==0 && mStation.getAddress() != null){
             Cursor fillupCheckCursor = mContext
                     .getContentResolver()
                     .query(DataContract.StationTable.CONTENT_URI
@@ -103,53 +115,78 @@ public class AddFillupPresenter implements Presenter<AddFillupView>, DatePickerD
         }
     }
 
-    public void insertFillup(){
-
-        calculateMpg();
-        if(mIsEdit){
-            mContext.getContentResolver().update(DataContract.FillupTable.CONTENT_URI
-                    , FillupFactory.toContentValues(mFillup)
-                    , DataContract.FillupTable._ID + " = " + mFillup.getId()
-                    , null);
-        } else {
-            mFillup.setStationId(mStation.getId());
-            mFillup.setCarId(mCar.getId());
-            mFillup.setDate(System.currentTimeMillis());
-            mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI
-                    , FillupFactory.toContentValues(mFillup));
-        }
-    }
-
     public boolean validateInput(LinearLayout container){
         for(int i=0; i < container.getChildCount(); i++){
             View v = container.getChildAt(i);
-            if(v instanceof EditText){
-                if(TextUtils.isEmpty(((EditText) v).getText().toString())){
-                    ((EditText) v).setHintTextColor(Color.RED);
-                    ((EditText) v).setError(mContext.getResources()
+            if(v instanceof TextInputLayout){
+                View et = ((TextInputLayout) v).getChildAt(0);
+                if(TextUtils.isEmpty(((EditText) et).getText().toString())
+                        || ((EditText)et).getText().toString() == ""){
+                    ((EditText) et).setHintTextColor(Color.RED);
+                    ((EditText) et).setError(mContext.getResources()
                             .getString(R.string.edit_text_error));
                     return false;
                 }
             }
         }
         mAddFillupView.buildFillup();
+        if(!mIsEdit){
+            mFillup.setStationId(mStation.getId());
+            mFillup.setCarId(mCar.getId());
+            mFillup.setDate(System.currentTimeMillis());
+        }
+        calculateFillupMpg();
+        calculateAvgMpg();
         insertFillup();
         return true;
     }
 
-    private void calculateMpg(){
-        String sortOrder = "date DESC";
-        int fillupCount = 0;
+    public void insertFillup(){
+        if(mIsEdit){
+            mContext.getContentResolver().update(DataContract.FillupTable.CONTENT_URI
+                    , FillupFactory.toContentValues(mFillup)
+                    , DataContract.FillupTable._ID + " = " + mFillup.getId()
+                    , null);
+        } else {
+            mContext.getContentResolver().insert(DataContract.FillupTable.CONTENT_URI
+                    , FillupFactory.toContentValues(mFillup));
+        }
+    }
+
+    private void calculateFillupMpg(){
+        //pull the fillup previous to this one, find the mileage difference and then divide the difference by the amount of fuel purchased at this fillup
+        Cursor previousFillupCursor = mContext
+                .getContentResolver()
+                .query(DataContract.FillupTable.CONTENT_URI
+                        , null
+                        , DataContract.FillupTable.CAR + " = " + mCar.getId()
+                        + " AND " + DataContract.FillupTable.DATE + " < " + mFillup.getDate()
+                        , null
+                        , " date DESC LIMIT 1");
+        if(previousFillupCursor.moveToFirst()){
+            Fillup previousFillup = FillupFactory.fromCursor(previousFillupCursor);
+            mFillup.setFillupMpg((mFillup.getFillupMileage() - previousFillup.getFillupMileage())
+                    / mFillup.getGallons());
+            previousFillupCursor.close();
+        } else{
+            mFillup.setFillupMpg(0.00);
+        }
+    }
+
+    private void calculateAvgMpg(){
+        int fillupCount = -1;
         double mpgTotal = 0;
-        Cursor allFillups = mContext.getContentResolver().query(DataContract.FillupTable.CONTENT_URI, null, DataContract.FillupTable.CAR + " = " + mCar.getId(), null, sortOrder);
+        Cursor allFillups = mContext.getContentResolver()
+                .query(DataContract.FillupTable.CONTENT_URI
+                        , null
+                        , DataContract.FillupTable.CAR + " = " + mCar.getId()
+
+                        , null, "date ASC");
         // fillup MPG is calculated by subtracting the previous fillup's mileage
         // from the current fillup's mileage, then dividing by
         // the gallons of fuel in this fillup
         if(allFillups != null && allFillups.moveToFirst()) {
             fillupCount += allFillups.getCount();
-            Fillup prevFillup = FillupFactory.fromCursor(allFillups);
-            mFillup.setFillupMpg((mFillup.getFillupMileage() - prevFillup.getFillupMileage()) / mFillup.getGallons());
-            mpgTotal = prevFillup.getFillupMpg() + mFillup.getFillupMpg();
 
             while (allFillups.moveToNext()) {
                 mpgTotal += allFillups.getInt(allFillups.getColumnIndexOrThrow(DataContract.FillupTable.MPG));
@@ -165,16 +202,22 @@ public class AddFillupPresenter implements Presenter<AddFillupView>, DatePickerD
         mContext.getContentResolver().update(DataContract.CarTable.CONTENT_URI, CarFactory.toContentValues(mCar), DataContract.CarTable._ID + " = " + mCar.getId(), null);
     }
 
-    public DatePickerDialog buildDatePickerDialog(){
+    public DatePickerFragment buildDatePickerFragment(){
         Calendar cal = Calendar.getInstance();
         if(mIsEdit) {
             cal.setTimeInMillis(mFillup.getDate());
         }
-        return new DatePickerDialog(mContext, this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        DatePickerFragment datePickerFragment = new DatePickerFragment();
+        Bundle data = new Bundle();
+        data.putInt(KeyContract.YEAR, cal.get(Calendar.YEAR));
+        data.putInt(KeyContract.MONTH, cal.get(Calendar.MONTH));
+        data.putInt(KeyContract.DAY, cal.get(Calendar.DAY_OF_MONTH));
+        datePickerFragment.setArguments(data);
+
+        return datePickerFragment;
     }
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+    public void onDateSet(int year, int monthOfYear, int dayOfMonth) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, monthOfYear);

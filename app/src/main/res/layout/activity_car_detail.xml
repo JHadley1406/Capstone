@@ -17,6 +17,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
+
     <include layout="@layout/content_car_detail" />
 
 

@@ -20,6 +20,9 @@ public class StationViewHolder extends RecyclerView.ViewHolder {
     TextView mName;
     @Bind(R.id.item_station_address)
     TextView mAddress;
+    @Bind(R.id.item_station_distance)
+    TextView mDistance;
+
 
     Station mHolderStation;
 
@@ -33,6 +36,9 @@ public class StationViewHolder extends RecyclerView.ViewHolder {
         mHolderStation = station;
         mName.setText(station.getName());
         mAddress.setText(station.getAddress());
+        if(mHolderStation.getId() == 0){
+            mDistance.setText(mHolderStation.getDistance());
+        }
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

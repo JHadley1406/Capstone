@@ -20,7 +20,20 @@
     </style>
 
     <style name="AppTheme.Card" parent="AppTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:elevation">2dp</item>
         <item name="android:padding">8dp</item>
+    </style>
+    <style name="AppTheme.CardView" parent="AppTheme">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <style name="AppTheme.Divider" parent="AppTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
     </style>
 </resources>

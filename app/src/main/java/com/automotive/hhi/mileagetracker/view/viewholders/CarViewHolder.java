@@ -45,7 +45,6 @@ public class CarViewHolder extends RecyclerView.ViewHolder {
 
     public void setViewHolder(Context context, Car car, final ViewHolderOnClickListener<Car> selectedCarListener){
         mHolderCar = car;
-        Log.i(LOG_TAG, "itemView width: " + mImage.getWidth());
         if(mHolderCar.getImage() != null) {
             Picasso.with(context)
                     .load(Uri.parse(mHolderCar.getImage()))
