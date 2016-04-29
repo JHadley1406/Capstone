@@ -49,6 +49,8 @@ public class CarViewHolder extends RecyclerView.ViewHolder {
             Picasso.with(context)
                     .load(Uri.parse(mHolderCar.getImage()))
                     .into(mImage);
+        }else{
+            mImage.getLayoutParams().height = 1;
         }
         mName.setText(car.getName());
         mMake.setText(car.getMake());
