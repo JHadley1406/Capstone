@@ -17,6 +17,8 @@ public class KeyContract {
     public static final String SEARCH_ADDRESS = "search_address";
     public static final String CALL_CAR_DETAIL = "call_car_detail";
 
+    public static final String WIDGET_CAR_SELECTED = "widget_car_selected";
+
 
     public static final String YEAR = "year";
     public static final String MONTH = "month";

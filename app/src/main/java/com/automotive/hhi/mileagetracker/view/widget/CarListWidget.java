@@ -11,6 +11,7 @@ import android.widget.RemoteViews;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
 import com.automotive.hhi.mileagetracker.R;
+import com.automotive.hhi.mileagetracker.model.data.Car;
 import com.automotive.hhi.mileagetracker.model.managers.CarListWidgetService;
 import com.automotive.hhi.mileagetracker.presenter.WidgetPresenter;
 import com.automotive.hhi.mileagetracker.view.CarDetailActivity;
@@ -25,6 +26,14 @@ public class CarListWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent){
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        if(intent.getAction().equals(KeyContract.WIDGET_CAR_SELECTED)){
+            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+            Intent launchCarDetailIntent = new Intent(context, CarDetailActivity.class);
+            launchCarDetailIntent.putExtra(KeyContract.CAR, intent.getParcelableExtra(KeyContract.CAR));
+            launchCarDetailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(launchCarDetailIntent);
+        }
         super.onReceive(context, intent);
     }
 
@@ -39,6 +48,16 @@ public class CarListWidget extends AppWidgetProvider {
             remoteViews.setRemoteAdapter(appWidgetIds[i], R.id.car_widget_list_view, intent);
 
             //remoteViews.setEmptyView(R.id.car_widget_list_view, R.id.car_widget_empty_view);
+
+            Intent launchIntent = new Intent(context, CarListWidget.class);
+            launchIntent.setAction(KeyContract.WIDGET_CAR_SELECTED);
+            launchIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            PendingIntent launchPendingIntent = PendingIntent.getBroadcast(context, 0
+                    , launchIntent
+                    , PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setPendingIntentTemplate(R.id.car_widget_list_view, launchPendingIntent);
+
+
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
         }

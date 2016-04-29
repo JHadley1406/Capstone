@@ -12,7 +12,6 @@ public class CarListWidgetService extends RemoteViewsService {
     @Override
     public WidgetPresenter onGetViewFactory(Intent intent) {
 
-        WidgetPresenter dataProvider = new WidgetPresenter(getApplicationContext(), intent);
-        return dataProvider;
+        return new WidgetPresenter(getApplicationContext(), intent);
     }
 }
