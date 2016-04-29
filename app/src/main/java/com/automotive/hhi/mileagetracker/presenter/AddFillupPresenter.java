@@ -22,7 +22,7 @@ import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.interfaces.AddFillupView;
-import com.automotive.hhi.mileagetracker.view.DatePickerFragment;
+import com.automotive.hhi.mileagetracker.view.fragments.DatePickerFragment;
 import com.automotive.hhi.mileagetracker.view.SelectStationActivity;
 
 import java.util.Calendar;
