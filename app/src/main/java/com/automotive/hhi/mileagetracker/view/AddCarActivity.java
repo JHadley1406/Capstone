@@ -71,6 +71,7 @@ public class AddCarActivity extends AppCompatActivity implements AddCarView {
 
     @OnClick(R.id.add_car_image)
     public void onImageClick(){
+        buildCar();
         mAddCarPresenter.selectImage();
     }
 
@@ -97,16 +98,25 @@ public class AddCarActivity extends AppCompatActivity implements AddCarView {
         mName.setText(mAddCarPresenter.getCar().getName());
         mMake.setText(mAddCarPresenter.getCar().getMake());
         mModel.setText(mAddCarPresenter.getCar().getModel());
-        mYear.setText(String.format("%d", mAddCarPresenter.getCar().getYear()));
+        if(mAddCarPresenter.getCar().getYear() != 0) {
+            mYear.setText(String.format("%d", mAddCarPresenter.getCar().getYear()));
+        }
     }
 
     @Override
     public void buildCar(){
-
-        mAddCarPresenter.getCar().setName(mName.getText().toString());
-        mAddCarPresenter.getCar().setMake(mMake.getText().toString());
-        mAddCarPresenter.getCar().setModel(mModel.getText().toString());
-        mAddCarPresenter.getCar().setYear(Integer.valueOf(mYear.getText().toString()));
+        if(!mName.getText().toString().equals("")) {
+            mAddCarPresenter.getCar().setName(mName.getText().toString());
+        }
+        if(!mMake.getText().toString().equals("")) {
+            mAddCarPresenter.getCar().setMake(mMake.getText().toString());
+        }
+        if(!mModel.getText().toString().equals("")) {
+            mAddCarPresenter.getCar().setModel(mModel.getText().toString());
+        }
+        if(!mYear.getText().toString().equals("")) {
+            mAddCarPresenter.getCar().setYear(Integer.valueOf(mYear.getText().toString()));
+        }
         if(mAddCarPresenter.getCar().getId() == 0){
             mAddCarPresenter.getCar().setAvgMpg(0.0);
         }
