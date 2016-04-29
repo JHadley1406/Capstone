@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -141,13 +142,13 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         int id = item.getItemId();
 
         switch (id){
-            case R.id.car_detail_menu_car_list:
-            {
-                mCarDetailPresenter.launchCarList();
+            case android.R.id.home:{
+                NavUtils.navigateUpTo(this, mCarDetailPresenter.returnToCarListIntent());
+                return true;
             }
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

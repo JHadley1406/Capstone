@@ -98,6 +98,11 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
         mCarDetailView.launchActivity(new Intent(mContext, CarListActivity.class), KeyContract.CALL_CAR_LIST);
     }
 
+    public Intent returnToCarListIntent(){
+        Intent backIntent = new Intent(mContext, CarListActivity.class);
+        return backIntent;
+    }
+
     @Override
     public void onClick(Fillup fillup){
         Intent editFillupIntent = new Intent(mCarDetailView.getContext(), AddFillupActivity.class);
