@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 
 import com.automotive.hhi.mileagetracker.KeyContract;
+import com.automotive.hhi.mileagetracker.R;
 
 /**
  * Created by Josiah Hadley on 4/26/2016.
@@ -19,8 +20,8 @@ public class DatePickerFragment extends DialogFragment {
         int year = getArguments().getInt(KeyContract.YEAR);
         int month = getArguments().getInt(KeyContract.MONTH);
         int day = getArguments().getInt(KeyContract.DAY);
-
-        return new DatePickerDialog(getActivity(), (AddFillupActivity)getActivity(), year, month, day);
+        return new DatePickerDialog(getActivity()
+                , R.style.AppTheme_Dialog, (AddFillupActivity)getActivity(), year, month, day);
     }
 
 }
