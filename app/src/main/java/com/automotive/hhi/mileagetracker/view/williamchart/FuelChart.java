@@ -57,15 +57,6 @@ public class FuelChart {
         buildTip();
         buildFuelChart();
 
-        mChartAction = new Runnable() {
-            @Override
-            public void run() {
-                Log.i(LOG_TAG, "in mChartAction Runnable");
-                mTip.prepare(mFuelChart.getEntriesArea(0).get(3), mValues[1]);
-                mFuelChart.showTooltip(mTip, true);
-            }
-        };
-
     }
 
     private void buildTip(){
