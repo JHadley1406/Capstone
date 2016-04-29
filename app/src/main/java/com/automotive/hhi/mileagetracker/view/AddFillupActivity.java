@@ -19,12 +19,14 @@ import com.automotive.hhi.mileagetracker.model.data.Station;
 import com.automotive.hhi.mileagetracker.presenter.AddFillupPresenter;
 import com.automotive.hhi.mileagetracker.view.interfaces.AddFillupView;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 
 public class AddFillupActivity extends AppCompatActivity implements AddFillupView
@@ -99,6 +101,20 @@ public class AddFillupActivity extends AppCompatActivity implements AddFillupVie
         mAddFillupPresenter
                 .buildDatePickerFragment()
                 .show(getSupportFragmentManager(), "date_picker");
+    }
+
+    @OnTextChanged(R.id.add_fillup_price)
+    public void onTextChanged(CharSequence s, int start, int before, int count){
+        DecimalFormat decimal = new DecimalFormat("0.00");
+        if(!s.toString().matches("^\\$(\\d+)(\\.\\d{2})?$")){
+            String userInput = ""+s.toString().replaceAll("[^\\d]", "");
+            if(userInput.length() > 0){
+                Float in = Float.parseFloat(userInput);
+                float percent = in/100;
+                mFuelPrice.setText("$"+decimal.format(percent));
+                mFuelPrice.setSelection(mFuelPrice.getText().length());
+            }
+        }
     }
 
     @Override

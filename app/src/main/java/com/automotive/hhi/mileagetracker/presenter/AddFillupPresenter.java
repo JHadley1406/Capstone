@@ -115,6 +115,7 @@ public class AddFillupPresenter implements Presenter<AddFillupView> {
         }
     }
 
+
     public boolean validateInput(LinearLayout container){
         for(int i=0; i < container.getChildCount(); i++){
             View v = container.getChildAt(i);
