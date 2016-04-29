@@ -93,7 +93,8 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@color/colorAccent"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_directions_car_black_48dp"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"

@@ -163,7 +163,9 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         mCarMake.setText(car.getMake());
         mCarModel.setText(car.getModel());
         mCarYear.setText(String.format("%d", car.getYear()));
-        Picasso.with(getContext()).load(car.getImage()).fit().into(mCarImage);
+        if(car.getImage() != null) {
+            Picasso.with(getContext()).load(car.getImage()).fit().into(mCarImage);
+        }
     }
 
 
