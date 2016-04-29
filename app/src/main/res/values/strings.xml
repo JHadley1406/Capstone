@@ -27,7 +27,7 @@
     <string name="add_fillup_price_hint">Price per Gallon</string>
     <string name="add_fillup_octane_hint">Octane Rating</string>
     <string name="add_fillup_add_button">Add Fillup</string>
-    <string name="add_fillup_edit_button">Edit Fillup</string>
+    <string name="add_fillup_edit_button">Submit</string>
 
     <string name="edit_text_error">Please Enter</string>
     <string name="car_detail_add_fillup_button">Add Fill-up</string>
