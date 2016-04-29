@@ -134,21 +134,36 @@ public class AddFillupActivity extends AppCompatActivity implements AddFillupVie
     }
 
     @Override
-    public void setFields(){
+    public void setFields() {
         mDate.setText(mAddFillupPresenter.getFillup().getReadableDate());
-
-        mFuelAmount.setText(String.format("%.2f", mAddFillupPresenter.getFillup().getGallons()));
-        mFuelPrice.setText(String.format("%.2f", mAddFillupPresenter.getFillup().getFuelCost()));
-        mOctane.setText(String.format("%d", mAddFillupPresenter.getFillup().getOctane()));
-        mMileage.setText(String.format("%.1f", mAddFillupPresenter.getFillup().getFillupMileage()));
+        if(mAddFillupPresenter.getFillup().getGallons() != 0){
+            mFuelAmount.setText(String.format("%.2f", mAddFillupPresenter.getFillup().getGallons()));
+        }
+        if(mAddFillupPresenter.getFillup().getFuelCost() != 0) {
+            mFuelPrice.setText(String.format("%.2f", mAddFillupPresenter.getFillup().getFuelCost()));
+        }
+        if(mAddFillupPresenter.getFillup().getOctane() != 0) {
+            mOctane.setText(String.format("%d", mAddFillupPresenter.getFillup().getOctane()));
+        }
+        if(mAddFillupPresenter.getFillup().getFillupMileage() != 0) {
+            mMileage.setText(String.format("%.1f", mAddFillupPresenter.getFillup().getFillupMileage()));
+        }
     }
 
     @Override
     public void buildFillup(){
-        mAddFillupPresenter.getFillup().setGallons(Double.parseDouble(mFuelAmount.getText().toString()));
-        mAddFillupPresenter.getFillup().setFuelCost(Double.parseDouble(mFuelPrice.getText().toString()));
-        mAddFillupPresenter.getFillup().setFillupMileage(Double.parseDouble(mMileage.getText().toString()));
-        mAddFillupPresenter.getFillup().setOctane(Integer.valueOf(mOctane.getText().toString()));
+        if(!mFuelAmount.getText().toString().equals("")) {
+            mAddFillupPresenter.getFillup().setGallons(Double.parseDouble(mFuelAmount.getText().toString()));
+        }
+        if(!mFuelPrice.getText().toString().equals("")) {
+            mAddFillupPresenter.getFillup().setFuelCost(Double.parseDouble(mFuelPrice.getText().toString()));
+        }
+        if(!mOctane.getText().toString().equals("")) {
+            mAddFillupPresenter.getFillup().setOctane(Integer.valueOf(mOctane.getText().toString()));
+        }
+        if(!mMileage.getText().toString().equals("")) {
+            mAddFillupPresenter.getFillup().setFillupMileage(Double.parseDouble(mMileage.getText().toString()));
+        }
     }
 
     private void setStationText(){
