@@ -143,10 +143,7 @@ public class CarDetailActivity extends AppCompatActivity implements CarDetailVie
         switch (id){
             case R.id.car_detail_menu_car_list:
             {
-                startActivity(new Intent(getContext(), CarListActivity.class));
-            }
-            case R.id.action_settings: {
-                return true;
+                mCarDetailPresenter.launchCarList();
             }
         }
 

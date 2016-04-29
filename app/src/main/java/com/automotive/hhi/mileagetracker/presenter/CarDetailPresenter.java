@@ -20,6 +20,7 @@ import com.automotive.hhi.mileagetracker.model.data.StationFactory;
 import com.automotive.hhi.mileagetracker.model.database.DataContract;
 import com.automotive.hhi.mileagetracker.view.AddCarActivity;
 import com.automotive.hhi.mileagetracker.view.AddFillupActivity;
+import com.automotive.hhi.mileagetracker.view.CarListActivity;
 import com.automotive.hhi.mileagetracker.view.interfaces.CarDetailView;
 import com.automotive.hhi.mileagetracker.view.williamchart.FuelChart;
 import com.db.chart.view.LineChartView;
@@ -91,6 +92,10 @@ public class CarDetailPresenter implements Presenter<CarDetailView>
         addFillupIntent.putExtra(KeyContract.STATION, new Station());
         addFillupIntent.putExtra(KeyContract.IS_EDIT, false);
         mCarDetailView.launchActivity(addFillupIntent, KeyContract.CREATE_FILLUP_CODE);
+    }
+
+    public void launchCarList(){
+        mCarDetailView.launchActivity(new Intent(mContext, CarListActivity.class), KeyContract.CALL_CAR_LIST);
     }
 
     @Override

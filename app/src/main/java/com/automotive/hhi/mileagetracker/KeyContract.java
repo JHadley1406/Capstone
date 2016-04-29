@@ -17,12 +17,14 @@ public class KeyContract {
     public static final String SEARCH_ADDRESS = "search_address";
     public static final String CALL_CAR_DETAIL = "call_car_detail";
 
+
     public static final String YEAR = "year";
     public static final String MONTH = "month";
     public static final String DAY = "day";
 
     public static final int GET_STATION_CODE = 789;
     public static final int RETURN_TO_DETAIL_CODE = 987;
+    public static final int CALL_CAR_LIST = 765;
     public static final int USED_STATION_LOADER_ID = 837294056;
     public static final int EDIT_CAR_CODE = 1467;
     public static final int CREATE_CAR_CODE = 1466;
