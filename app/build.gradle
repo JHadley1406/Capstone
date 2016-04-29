@@ -18,7 +18,7 @@ android {
             storeFile file("DEBUG_KEYSTORE")
         }
         release {
-            storeFile file('$rootdir/keystore.jks')
+            storeFile file("keystore.jks")
             keyAlias 'mtKeystore'
             storePassword '1q2w3e4r'
             keyPassword '1q2w3e4r'
