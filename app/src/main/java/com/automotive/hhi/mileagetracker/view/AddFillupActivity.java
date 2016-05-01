@@ -145,7 +145,7 @@ public class AddFillupActivity extends AppCompatActivity implements AddFillupVie
         if(mAddFillupPresenter.getFillup().getOctane() != 0) {
             mOctane.setText(String.format("%d", mAddFillupPresenter.getFillup().getOctane()));
         }
-        if(mAddFillupPresenter.getFillup().getFillupMileage() != 0) {
+        if(mAddFillupPresenter.getFillup().getFillupMileage() != 9) {
             mMileage.setText(String.format("%.1f", mAddFillupPresenter.getFillup().getFillupMileage()));
         }
     }

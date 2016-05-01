@@ -65,6 +65,7 @@
                 android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="@integer/add_car_year_length"
                 android:imeOptions="actionDone"
                 android:nextFocusUp="@id/add_car_model"
                 android:nextFocusDown="@+id/add_car_submit"/>

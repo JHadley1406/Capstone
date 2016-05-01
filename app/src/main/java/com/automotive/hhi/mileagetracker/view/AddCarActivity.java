@@ -3,6 +3,7 @@ package com.automotive.hhi.mileagetracker.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 public class AddCarActivity extends AppCompatActivity implements AddCarView {
 
@@ -73,6 +75,17 @@ public class AddCarActivity extends AppCompatActivity implements AddCarView {
     public void onImageClick(){
         buildCar();
         mAddCarPresenter.selectImage();
+    }
+
+    @OnTextChanged(R.id.add_car_year)
+    public void onYearTextChanged(CharSequence s, int start, int before, int count){
+
+        if(!s.toString().matches("^(\\d{1,4})?$")){
+            String userInput = "" + s.toString().replaceAll("[^\\d]", "");
+            mYear.setText(userInput);
+            mYear.setSelection(mYear.getText().length());
+        }
+
     }
 
 

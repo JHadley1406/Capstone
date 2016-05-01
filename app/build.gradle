@@ -20,8 +20,8 @@ android {
         release {
             storeFile file("keystore.jks")
             keyAlias 'mtKeystore'
-            storePassword 'password'
-            keyPassword 'password'
+            storePassword '1q2w3e4r'
+            keyPassword '1q2w3e4r'
         }
     }
 
